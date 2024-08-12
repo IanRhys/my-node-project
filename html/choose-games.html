@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>
+        home page
+    </title>
+    <link rel="stylesheet" href="css/choose-games-style.css">
+</head>
+<body onload="getAllConferenceGames()">
+
+    <header>
+        <div id="top-header">
+            <div id = "logo">
+                <img src="images/logo.png" />
+            </div>
+            <nav>
+                <div id="profile-button">
+                    <img src = "images/pfp.png" />
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <form id = "week-selection">
+
+        </form>
+
+        <form id = "container">
+            <div class = "conference-holder">
+                <!-- <label class = "conference-label">SEC</label> -->
+                <img class = conference-logo src = "images/Southeastern_Conference_logo.svg.png">
+                <ul id = "SEC" class = "games-list"></ul>
+            </div>
+            <div id = "pac-and-ind">
+                <div class = "conference-holder">
+                    <img class = conference-logo src = "images/Pac-12_logo.svg.png">
+                    <ul id = "PAC" class = "games-list"></ul>
+                </div>
+                <div class = "conference-holder">
+                    <img class = conference-logo src = "images/NCAA_Division_I_FBS_independent_schools_logo.png">
+                    <ul id = "Ind" class = "games-list"></ul>
+                </div>
+
+
+            </div>
+            <div class = "conference-holder">
+                <img class = conference-logo src = "images/Big_12_Conference_(cropped)_logo.svg.png">
+                <ul id = "B12" class = "games-list"></ul>
+            </div>
+            <div class = "conference-holder">
+                <img class = conference-logo src = "images/Big_Ten_Conference_logo.svg.png">
+                <ul id = "B1G" class = "games-list"></ul>
+            </div>
+
+            <div class = "conference-holder">
+                <img class = conference-logo src = "images/Atlantic_Coast_Conference_logo.svg.png">
+                <ul id = "ACC" class = "games-list"></ul>
+            </div>
+            <div class = "conference-holder">
+                <img class = conference-logo src = "images/American_Athletic_Conference_logo.svg.png">
+                <ul id = "AAC" class = "games-list"></ul>
+            </div>
+            <div class = "conference-holder">
+                <img class = conference-logo src = "images/CUSA_logo.svg.png">
+                <ul id = "CUSA" class = "games-list"></ul>
+            </div>
+            <div class = "conference-holder">
+                <img class = conference-logo src = "images/Mid-American_Conference_logo.svg.png">
+                <ul id = "MAC" class = "games-list"></ul>
+            </div>
+            <div class = "conference-holder">
+                <img class = conference-logo src = "images/Mountain_West_Conference_logo.svg.png">
+                <ul id = "MWC" class = "games-list"></ul>
+            </div>
+            <div class = "conference-holder">
+                <img class = conference-logo src = "images/Sun_Belt_Conference_2020_logo_and_name.svg.png">
+                <ul id = "SBC" class = "games-list"></ul>
+            </div>
+        </form>    
+        <script>
+
+            function getAllConferenceGames(){
+                getGames('ACC');
+                getGames('SEC');
+                getGames('B12');
+                getGames('B1G');
+                getGames('PAC');
+                getGames('CUSA');
+                getGames('MAC');
+                getGames('MWC');
+                getGames('Ind');
+                getGames('SBC');
+                getGames('AAC');
+            }
+
+            async function getGames(conferenceAbbreviation){
+                console.log(conferenceAbbreviation);
+                const list = document.getElementById(conferenceAbbreviation);
+                const baseURL = 'http://localhost:3000/getGames/';
+                const res = await fetch(baseURL + conferenceAbbreviation,
+                {
+                        method: 'GET'
+                })
+                console.log(res);
+                const data = await res.json();
+                const homeTeams = [];
+                const awayTeams = [];
+                const teamMatchups = [];
+                for(var i = 0; i < data.length; i++){
+                    homeTeams[i] = data[i].homeTeam;
+                    awayTeams[i] = data[i].awayTeam;
+                    teamMatchups[i] = data[i].homeTeam + ' vs. ' + data[i].awayTeam;
+                    console.log(teamMatchups[i]);
+                }
+                for(i = 0; i < teamMatchups.length; ++i){
+                    let button = document.createElement('button');
+                    button.innerText = teamMatchups[i];
+                    button.className = 'button';
+                    button.style["display"] = "block";
+                    button.style["font-size"] = "20px";
+                    button.style["border"] = "3px solid hsl(44, 33%, 50%)";
+                    button.style["border-radius"] = "5px";
+                    button.style["margin-bottom"] = "3px";
+                    button.style[""]
+                    list.appendChild(button);
+                }
+            }
+        </script>
+    </main>
+</body>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>
+        Login Page
+    </title>
+    <link rel="stylesheet" href="css/login-style.css">
+</head>
+<body>
+
+    <header>
+        <div id="top-header">
+            <div id = "logo">
+                <img src="images/logo.png" />
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div id="user-login">
+
+            <img src = "images/logo.png">
+
+            <form>
+                <div class = "wrapper">
+                    <h3 class = "label">
+                        Username:
+                    </h3>
+                    <input type = "text" class = "textbox" id = "username">
+                    </input>
+                </div>
+                <div class = "wrapper">
+                    <h3 class = "label">
+                        Password:
+                    </h3>
+                    <input type = "password" class = "textbox" id = "password">
+                    </input>
+                </div>
+            </form>
+            
+            <div class = "spacing">
+
+            </div>
+            <div class = "wrapper">
+                <div class = "button" id = "login-button" onclick = "getUserAndPass()">
+                    Login
+                </div>
+            </div>
+            <div id = "new-user-label">
+                <h5 id = "test">
+                    New User? Click
+                    <a href = "sign-up.html" id = "test2">here
+                    </a>
+                    to sign up.
+                </h5>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function getUserAndPass(){
+            const username = document.getElementById('username');
+            const password = document.getElementById('password');
+            const usernameString = username.value;
+            const passwordString = password.value;
+            console.log(`${usernameString} ${passwordString}`);
+        }
+    </script>
+        
+
+</body>
+</html>
