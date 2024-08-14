@@ -1,6 +1,7 @@
 const { v4: uuidv4 } = require("uuid");
 const jwt = require("jsonwebtoken");
 const userSchema = require("../schemas/userSchema");
+const bookWalletSchema = require("../schemas/bookWalletSchema");
 const bcrypt = require("bcryptjs");
 const {
   createTable,
@@ -8,32 +9,40 @@ const {
   insertRecord,
 } = require("../utils/sqlFunctions");
 
+
 const generateAccessToken = (userId) => {
   return jwt.sign({ userId }, process.env.JWT_SECRET, { expiresIn: "7d" });
 };
 
 const register = async (req, res) => {
-  const { email, password } = req.body;
-  if (!email || !password) {
+  const { email, username, password } = req.body;
+  if (!email || !username || !password) {
     res
       .status(400)
-      .json({ error: "Email or Password fields cannot be empty!" });
+      .json({ error: "Email, Username, or Password fields cannot be empty!" });
     return;
   }
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
+  const bookWalletID = uuidv4();
   const user = {
-    userId: uuidv4(),
+    username: username,
     email,
     password: hashedPassword,
+    bookWallet: bookWalletID
   };
+  const bookWallet = {
+    walletID: bookWalletID
+  }
   try {
     await createTable(userSchema);
+    await createTable(bookWalletSchema);
     const userAlreadyExists = await checkRecordExists("users", "email", email);
     if (userAlreadyExists) {
       res.status(409).json({ error: "Email already exists" });
     } else {
       await insertRecord("users", user);
+      await insertRecord("bookWallets", bookWallet);
       res.status(201).json({ message: "User created successfully!" });
     }
   } catch (error) {

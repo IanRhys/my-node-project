@@ -4,7 +4,7 @@ const dotenv = require('dotenv');
 dotenv.config();
 const cors = require('cors');
 const connectDB = require("./db/db");
-const port = process.env.PORT||3000;
+const port = 3000;
 const mysql = require('mysql');
 const path = require('path');
 
@@ -51,21 +51,23 @@ app.use('products', productsRoute);
 app.use("/", authRoutes);
 app.use(express.static('html'));
 
-app.get('/', (req, res) => {
-    res.send('<h1> Hello, Express.js Server!</h1>');
-});
-
-app.get('/getGames', (req, res) => {
+//sends pages for each URL ending
+app.get('/choose-games', (req, res) => {
     res.sendFile(path.join(__dirname, '/html/choose-games.html'));
 });
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '/html/index.html'));
+});
+app.get('/signup', (req, res) => {
+  res.sendFile(path.join(__dirname, '/html/sign-up.html'));
+});
+app.get('/bookshelf', (req, res) => {
+  res.sendFile(path.join(__dirname, '/html/home.html'));
+});
+app.get('/book-view', (req, res) => {
+  res.sendFile(path.join(__dirname, '/html/book-view.html'));
+});
 
-// connection.connect(error => {
-//     if (error){
-//         console.log("A error has been occurred "
-//             + "while connecting to database.");        
-//         throw error;
-//     }
-//     app.listen(port, () => {
-//         console.log(`Server is running on port ${port}`);
-//     }) 
-// });
+app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
+});

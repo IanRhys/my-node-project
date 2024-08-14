@@ -22,35 +22,19 @@
 
             <img src = "images/logo.png">
 
-            <form>
-                <div class = "wrapper">
-                    <h3 class = "label">
-                        Username:
-                    </h3>
-                    <input type = "text" class = "textbox" id = "username">
-                    </input>
-                </div>
-                <div class = "wrapper">
-                    <h3 class = "label">
-                        Password:
-                    </h3>
-                    <input type = "password" class = "textbox" id = "password">
-                    </input>
-                </div>
+            <form id="loginForm">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+                <br>
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+                <br>
+                <button type="submit" class = "button">Login</button>
             </form>
-            
-            <div class = "spacing">
-
-            </div>
-            <div class = "wrapper">
-                <div class = "button" id = "login-button" onclick = "getUserAndPass()">
-                    Login
-                </div>
-            </div>
             <div id = "new-user-label">
-                <h5 id = "test">
+                <h5>
                     New User? Click
-                    <a href = "sign-up.html" id = "test2">here
+                    <a href = "/signup">here
                     </a>
                     to sign up.
                 </h5>
@@ -58,16 +42,27 @@
         </div>
     </main>
 
+    <script src="scripts/loginScript.js"></script>
+
     <script>
-        function getUserAndPass(){
-            const username = document.getElementById('username');
-            const password = document.getElementById('password');
-            const usernameString = username.value;
-            const passwordString = password.value;
-            console.log(`${usernameString} ${passwordString}`);
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const baseURL = 'http://localhost:3000/login';
+        async function authenticateUser(){
+            const res = await fetch(baseURL,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-type': 'application/json'
+                    },
+                    body: {
+                        "email": "${usernameInput}",
+                        "password": "${passwordInput}"
+                    }
+                }
+            );
+            console.log(res);
         }
     </script>
-        
-
 </body>
 </html>
