@@ -42,8 +42,54 @@ const insertRecord = (tableName, record) => {
   });
 };
 
+const getWalletIDFromDB = (email) => {
+  return new Promise((resolve, reject) => {
+    const query = `SELECT bookWallet FROM users WHERE email = '${email}'`;
+    pool.query(query, (err, results)=>{
+      if (err) {
+        reject(err);
+      } else {
+        resolve(results);
+      }
+    });
+  });
+}
+
+const getBooksFromDB = (walletID) => {
+  return new Promise((resolve, reject) => {
+    const query = `SELECT * FROM bookWallets WHERE walletID = '${walletID}'`;
+    pool.query(query, (err, results)=>{
+      if (err) {
+        reject(err);
+      } else {
+        if(results.length === 0){
+          console.log('No records found for walletID:', walletID);
+        }
+        resolve(results);
+      }
+    });
+  });
+}
+
+const createNewBook = (walletID, column, bookName) => {
+  return new Promise((resolve, reject) => {
+    console.log("attempting to createNewBook");
+    const query = `UPDATE bookWallets SET ${column} = '${bookName}' WHERE walletID = '${walletID}'`;
+    pool.query(query, (err, results)=>{
+      if (err) {
+        reject(err);
+      } else {
+        resolve(results);
+      }
+    });
+  });
+}
+
 module.exports = {
   createTable,
   checkRecordExists,
   insertRecord,
+  getBooksFromDB,
+  getWalletIDFromDB,
+  createNewBook
 };

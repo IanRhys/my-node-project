@@ -91,7 +91,6 @@
             }
 
             async function getGames(conferenceAbbreviation){
-                console.log(conferenceAbbreviation);
                 const list = document.getElementById(conferenceAbbreviation);
                 const baseURL = 'http://localhost:3000/getGames/';
                 const res = await fetch(baseURL + conferenceAbbreviation,
@@ -118,7 +117,6 @@
                     button.style["border"] = "3px solid hsl(44, 33%, 50%)";
                     button.style["border-radius"] = "5px";
                     button.style["margin-bottom"] = "3px";
-                    button.style[""]
                     list.appendChild(button);
                 }
             }

@@ -11,7 +11,7 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
         password: password
     };
 
-    // Send the POST request
+    // attempt to login using the provided credentials
     fetch('http://localhost:3000/login', {
         method: 'POST',
         headers: {
@@ -20,20 +20,20 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
         body: JSON.stringify(data)
     })
     .then(response => {
+        //if there is a problem on login, user is notified
         if(!response.ok){
             alert('Login failed: ' + response.statusText);
             throw new Error('Problem with the network' + response.statusText);
         }
-        
         return response.json();
     })
     .then(result => {
-        console.log('Success:', result);
-        // Redirect to another page, or clear the form, or show a success message
-        window.location.replace("/bookshelf"); // Example redirect
+        //if there is no issue, then log in continues
+        console.log('Success:', result.access_token);
+        document.cookie = `access_token=${result.access_token}`;
+        window.location.replace('/bookshelf');
     })
     .catch(error => {
         console.error('Error:', error);
-        // Handle the error here (e.g., display an error message to the user)
     });
 });

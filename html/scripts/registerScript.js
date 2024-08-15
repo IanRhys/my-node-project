@@ -13,7 +13,7 @@ document.getElementById('registerForm').addEventListener('submit', function(even
         password: password
     };
 
-    // Send the POST request
+    //attempts to register the user with the provided credentials
     fetch('http://localhost:3000/register', {
         method: 'POST',
         headers: {
@@ -22,6 +22,7 @@ document.getElementById('registerForm').addEventListener('submit', function(even
         body: JSON.stringify(data)
     })
     .then(response => {
+        //if an issue arises, then the user is notified
         if(!response.ok){
             alert('Sign up failed: ' + response.statusText);
             throw new Error('Problem with the network' + response.statusText);
@@ -30,12 +31,11 @@ document.getElementById('registerForm').addEventListener('submit', function(even
         return response.json();
     })
     .then(result => {
+        //if successful, user is redirected back to the login page
         console.log('Success:', result);
-        // Redirect to another page, or clear the form, or show a success message
         window.location.replace("/"); // Example redirect
     })
     .catch(error => {
         console.error('Error:', error);
-        // Handle the error here (e.g., display an error message to the user)
     });
 });

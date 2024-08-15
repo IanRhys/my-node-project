@@ -7,7 +7,7 @@
     </title>
     <link rel="stylesheet" href="css/home-style.css">
 </head>
-<body>
+<body onload = "getBooks()">
 
     <header>
         <div id="top-header">
@@ -24,21 +24,45 @@
 
     <main>
         <div id = "container">
-            <div id = "my-books" class = "books">
+            <div class = "books">
                 My Books
-                <div class = "divider">
+                <div class = "divider"></div>
+                <!-- <img src = "images/book.png" class = "book-img">
+                <img src = "images/new-book.png" class = "book-img" id = "new-book-img"> -->
+                <ul id = "my-books" class = "books-list"></ul>
+                <button class="open-button" onclick="openForm()">New Book</button>
+                <div class="form-popup" id="myForm">
+                    <form id = "new-book" class="form-container">
+                        <h1>New Book</h1>
+                  
+                        <label for="book-name"><b>Book Name</b></label>
+                        <input type="text" placeholder="Enter Book Name" name="book-name" id = "book-name" required>
+                        <div id = "button-container">
+                            <button type="button" class="btn cancel" onclick="closeForm()">Cancel</button>
+                            <button type="submit" class="btn">Create Book</button>    
+                        </div>
+                    </form>
                 </div>
-                <img src = "images/book.png" class = "book-img">
-                <img src = "images/new-book.png" class = "book-img" id = "new-book-img">
             </div>
 
-            <div id = "joined-books" class = "books">
+            <div class = "books">
                 Joined Books
-                <div class = "divider">
-                </div>
-                <img src="images/book.png" class = "book-img">
-
+                <div class = "divider"></div>
+                <!-- <img src="images/book.png" class = "book-img"> -->
+                <ul id = "joined-books" class = "books-list"></ul>
             </div>
         </div>
     </main>
+
+    <script src = 'scripts/getBooksScript.js'></script>
+    <script src = 'scripts/createBookScript.js'></script>
+    <script>
+        function openForm() {
+            document.getElementById("myForm").style.display = "block";
+        }
+
+        function closeForm() {
+            document.getElementById("myForm").style.display = "none";
+        }
+    </script>
 </body>

@@ -2,17 +2,19 @@
 const express = require('express');
 const dotenv = require('dotenv');
 dotenv.config();
+const jwt = require('jsonwebtoken');
 const cors = require('cors');
 const connectDB = require("./db/db");
 const port = 3000;
 const mysql = require('mysql');
 const path = require('path');
-
+const cookieParser = require('cookie-parser');
 
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
 
 connectDB();
 
@@ -32,22 +34,37 @@ app.use(cors({
 
 }));
 
-// const connection = mysql.createConnection({
-//     host: 'localhost',
-//     user: 'root',
-//     password: 'Ian1029457!',
-//     database: "cfb"
-// });
+//function that verifies that a user has logged in before allowing access to 
+//web pages that need account information, user will be redirected to the log in 
+//page if not logged in
+const verifyToken = (req, res, next) => {
+  const token = readCookie('access_token', req.headers.cookie);
+
+ if (!token) {
+  res.redirect('/');
+  return;
+  }
+ jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+  if (err) {
+  res.redirect('/');
+  return;
+  }
+ req.user = decoded;
+  next();
+  });
+ };
 
 
 // Include route files
 const getGamesRoute = require('./routes/getGames');
 const productsRoute = require('./routes/products');
 const authRoutes = require('./routes/authRoutes');
+const bookshelfRoute = require('./routes/bookshelfRoutes');
 
 // Use routes
 app.use('/getGames', getGamesRoute);
-app.use('products', productsRoute);
+app.use('/bookshelfRoutes', bookshelfRoute);
+app.use('/products', productsRoute);
 app.use("/", authRoutes);
 app.use(express.static('html'));
 
@@ -61,13 +78,29 @@ app.get('/', (req, res) => {
 app.get('/signup', (req, res) => {
   res.sendFile(path.join(__dirname, '/html/sign-up.html'));
 });
-app.get('/bookshelf', (req, res) => {
+app.get('/bookshelf', verifyToken, (req, res) => {
   res.sendFile(path.join(__dirname, '/html/home.html'));
 });
-app.get('/book-view', (req, res) => {
+app.get('/book-view', verifyToken, (req, res) => {
   res.sendFile(path.join(__dirname, '/html/book-view.html'));
 });
+app.get('/make-picks', verifyToken, (req, res) => {
+  res.sendFile(path.join(__dirname, '/html/book-view.html'));
+});
+
+
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });
+
+function readCookie(name, cookieString) {
+	var nameEQ = name + "=";
+	var ca = cookieString.split(';');
+	for(var i=0;i < ca.length;i++) {
+		var c = ca[i];
+		while (c.charAt(0)==' ') c = c.substring(1,c.length);
+		if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+	}
+	return null;
+}
