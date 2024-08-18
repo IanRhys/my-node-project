@@ -1,6 +1,7 @@
 const mysql = require("mysql");
 const config = require("../db/config");
 const pool = mysql.createPool(config);
+const {v4: uuidv4} = require("uuid");
 
 const createTable = (schema) => {
   return new Promise((resolve, reject) => {
@@ -71,11 +72,36 @@ const getBooksFromDB = (walletID) => {
   });
 }
 
-const createNewBook = (walletID, column, bookName) => {
+const createNewBook = (walletID, column, bookID, bookName, email) => {
   return new Promise((resolve, reject) => {
-    console.log("attempting to createNewBook");
-    const query = `UPDATE bookWallets SET ${column} = '${bookName}' WHERE walletID = '${walletID}'`;
-    pool.query(query, (err, results)=>{
+    const bookQuery = `UPDATE bookWallets SET ${column} = '${bookID}' WHERE walletID = '${walletID}'`;
+    pool.query(bookQuery, (err, results)=>{
+      if (err) {
+        reject(err);
+      } else {
+        resolve(results);
+      }
+    });
+    const membersID = uuidv4();
+    const bookTableQuery = `INSERT INTO books SET bookName = '${bookName}', bookID = '${bookID}'`;
+    pool.query(bookTableQuery, (err, results)=>{
+      if (err) {
+        reject(err);
+      } else {
+        resolve(results);
+      }
+    });
+    const membersTableQuery = `INSERT INTO members SET bookID = '${bookID}', member1 = '${email}'`;
+    pool.query(membersTableQuery, (err, results)=>{
+      if (err) {
+        reject(err);
+      } else {
+        resolve(results);
+      }
+    });
+    const scoreID = bookID + email;
+    const scoresQuery = `INSERT INTO scores SET scoreID = '${scoreID}', score = '0'`;
+    pool.query(scoresQuery, (err, results)=>{
       if (err) {
         reject(err);
       } else {
@@ -85,11 +111,25 @@ const createNewBook = (walletID, column, bookName) => {
   });
 }
 
+const getBookName = (bookID) => {
+  return new Promise((resolve, reject) => {
+    const bookNameQuery = `SELECT bookName FROM books WHERE bookID = '${bookID}'`;
+    pool.query(bookNameQuery, (err, results)=>{
+      if (err) {
+        reject(err);
+      } else {
+        resolve(results);
+      }
+    });
+  });  
+}
+
 module.exports = {
   createTable,
   checkRecordExists,
   insertRecord,
   getBooksFromDB,
   getWalletIDFromDB,
-  createNewBook
+  createNewBook,
+  getBookName
 };

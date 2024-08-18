@@ -1,6 +1,10 @@
 // routes/users.js
 const express = require('express');
 const router = express.Router();
+const {v4: uuidv4} = require('uuid');
+const bookSchema = require("../schemas/bookSchema");
+const membersSchema = require("../schemas/membersSchema");
+const scoresSchema = require("../schemas/scoresSchema")
 
 const {
     createTable,
@@ -8,7 +12,8 @@ const {
     insertRecord,
     getBooksFromDB,
     getWalletIDFromDB,
-    createNewBook
+    createNewBook,
+    getBookName
   } = require("../utils/sqlFunctions");
 
 router.get('/:email', async (req, res) => {
@@ -25,16 +30,25 @@ router.get('/:email', async (req, res) => {
         res.status(500).json({ error: 'An error occurred while processing your request' });
     }
 });
-router.post('/createBook', async (req, res)=>{
-    console.log("in the router for creating book");
-    // const walletID = req.body.walletID;
-    // const column = req.body.column;
-    // const bookName = req.body.bookName;
-
-    const { walletID, column, bookName } = req.body;
-    
+router.get('/getBookName/:bookID', async (req, res)=>{
     try{
-        const newBook = await createNewBook(walletID, column, bookName);
+        const bookName = await getBookName(req.params.bookID);
+        res.json({ bookName });
+    }
+    catch(error){
+        console.error(error);
+        res.status(500).json({ error: 'An error occurred while processing your request' });
+    }
+});
+
+router.post('/createBook', async (req, res)=>{
+    const { walletID, column, bookName, email } = req.body;
+    const bookID = uuidv4();
+    try{
+        await createTable(bookSchema);
+        await createTable(membersSchema);
+        await createTable(scoresSchema);
+        await createNewBook(walletID, column, bookID, bookName, email);
     }
     catch (error) {
         // Handle any errors that might occur

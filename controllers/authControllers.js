@@ -6,7 +6,7 @@ const bcrypt = require("bcryptjs");
 const {
   createTable,
   checkRecordExists,
-  insertRecord,
+  insertRecord
 } = require("../utils/sqlFunctions");
 
 

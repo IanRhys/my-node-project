@@ -16,13 +16,13 @@ document.getElementById('new-book').addEventListener('submit', async function(ev
         const data = await res.json(); // Assuming the server responds with JSON
         const bookItem = data.books[0];
         if(bookItem.myBook1 === null){
-            createBook(bookItem.walletID, 'myBook1', bookName);
+            createBook(bookItem.walletID, 'myBook1', bookName, email);
         }
         else if(bookItem.myBook2 === null){
-            createBook(bookItem.walletID, 'myBook2', bookName);
+            createBook(bookItem.walletID, 'myBook2', bookName, email);
         }
         else if(bookItem.myBook3 === null){
-            createBook(bookItem.walletID, 'myBook3', bookName);
+            createBook(bookItem.walletID, 'myBook3', bookName, email);
         }
         else{
             alert("No book slots available, please delete a book before trying again");
@@ -53,11 +53,12 @@ function readCookie(name, cookieString) {
 	return null;
 }
 
-async function createBook(walletID, column, bookName){
+async function createBook(walletID, column, bookName, email){
     const data = {
         walletID: walletID,
         column: column,
-        bookName: bookName
+        bookName: bookName,
+        email: email
     };
     console.log("about to attempt the route createBOok");
     const res = await fetch('http://localhost:3000/bookshelfRoutes/createBook', {
