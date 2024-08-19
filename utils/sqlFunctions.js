@@ -43,28 +43,15 @@ const insertRecord = (tableName, record) => {
   });
 };
 
-const getWalletIDFromDB = (email) => {
+const getBooksFromDB = (email) => {
   return new Promise((resolve, reject) => {
-    const query = `SELECT bookWallet FROM users WHERE email = '${email}'`;
-    pool.query(query, (err, results)=>{
-      if (err) {
-        reject(err);
-      } else {
-        resolve(results);
-      }
-    });
-  });
-}
-
-const getBooksFromDB = (walletID) => {
-  return new Promise((resolve, reject) => {
-    const query = `SELECT * FROM bookWallets WHERE walletID = '${walletID}'`;
+    const query = `SELECT * FROM bookWallets WHERE email = '${email}'`;
     pool.query(query, (err, results)=>{
       if (err) {
         reject(err);
       } else {
         if(results.length === 0){
-          console.log('No records found for walletID:', walletID);
+          console.log('No records found for email:', email);
         }
         resolve(results);
       }
@@ -72,9 +59,9 @@ const getBooksFromDB = (walletID) => {
   });
 }
 
-const createNewBook = (walletID, column, bookID, bookName, email) => {
+const createNewBook = (email, column, bookID, bookName) => {
   return new Promise((resolve, reject) => {
-    const bookQuery = `UPDATE bookWallets SET ${column} = '${bookID}' WHERE walletID = '${walletID}'`;
+    const bookQuery = `UPDATE bookWallets SET ${column} = '${bookID}' WHERE email = '${email}'`;
     pool.query(bookQuery, (err, results)=>{
       if (err) {
         reject(err);
@@ -83,7 +70,7 @@ const createNewBook = (walletID, column, bookID, bookName, email) => {
       }
     });
     const membersID = uuidv4();
-    const bookTableQuery = `INSERT INTO books SET bookName = '${bookName}', bookID = '${bookID}'`;
+    const bookTableQuery = `INSERT INTO books SET bookName = '${bookName}', bookID = '${bookID}', owner = '${email}'`;
     pool.query(bookTableQuery, (err, results)=>{
       if (err) {
         reject(err);
@@ -169,7 +156,6 @@ module.exports = {
   checkRecordExists,
   insertRecord,
   getBooksFromDB,
-  getWalletIDFromDB,
   createNewBook,
   getBookName,
   getBookMembers,

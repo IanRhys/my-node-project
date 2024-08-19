@@ -24,15 +24,13 @@ const register = async (req, res) => {
   }
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
-  const bookWalletID = uuidv4();
   const user = {
     username: username,
     email,
-    password: hashedPassword,
-    bookWallet: bookWalletID
+    password: hashedPassword
   };
   const bookWallet = {
-    walletID: bookWalletID
+    email: email
   }
   try {
     await createTable(userSchema);

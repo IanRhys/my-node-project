@@ -18,9 +18,7 @@ const {
 
 router.get('/:email', async (req, res) => {
     try {
-        const email = req.params.email;
-        const walletID = await getWalletIDFromDB(email); // Assuming getWalletID returns a Promise
-        const books = await getBooksFromDB(walletID[0].bookWallet); // Assuming getBooks returns a Promise
+        const books = await getBooksFromDB(req.params.email); // Assuming getBooks returns a Promise
 
         // Send a JSON response with the retrieved data
         res.json({ books });
@@ -42,13 +40,13 @@ router.get('/getBookName/:bookID', async (req, res)=>{
 });
 
 router.post('/createBook', async (req, res)=>{
-    const { walletID, column, bookName, email } = req.body;
+    const { email, column, bookName} = req.body;
     const bookID = uuidv4();
     try{
         await createTable(bookSchema);
         await createTable(membersSchema);
         await createTable(scoresSchema);
-        await createNewBook(walletID, column, bookID, bookName, email);
+        await createNewBook(email, column, bookID, bookName);
     }
     catch (error) {
         // Handle any errors that might occur

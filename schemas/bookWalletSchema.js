@@ -1,6 +1,6 @@
 const bookWalletSchema = `
     CREATE TABLE IF NOT EXISTS bookWallets (
-        walletID VARCHAR(255) PRIMARY KEY,
+        email VARCHAR(255) PRIMARY KEY,
         myBook1 VARCHAR(255),
         myBook2 VARCHAR(255),
         myBook3 VARCHAR(255),
