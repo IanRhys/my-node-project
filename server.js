@@ -60,17 +60,22 @@ const getGamesRoute = require('./routes/getGames');
 const productsRoute = require('./routes/products');
 const authRoutes = require('./routes/authRoutes');
 const bookshelfRoute = require('./routes/bookshelfRoutes');
+const bookViewRoutes = require('./routes/bookViewRoutes');
 
 // Use routes
 app.use('/getGames', getGamesRoute);
 app.use('/bookshelfRoutes', bookshelfRoute);
 app.use('/products', productsRoute);
+app.use('/bookViewRoutes', bookViewRoutes);
 app.use("/", authRoutes);
 app.use(express.static('html'));
 
 //sends pages for each URL ending
 app.get('/choose-games', (req, res) => {
     res.sendFile(path.join(__dirname, '/html/choose-games.html'));
+});
+app.get('/book-view', verifyToken, (req, res) => {
+  res.sendFile(path.join(__dirname, '/html/book-view.html'));
 });
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '/html/index.html'));

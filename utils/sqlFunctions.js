@@ -111,10 +111,50 @@ const createNewBook = (walletID, column, bookID, bookName, email) => {
   });
 }
 
+const getBookMembers = (bookID) => {
+  console.log("getting book members from sql");
+  return new Promise((resolve, reject) => {
+    const bookMembersQuery = `SELECT * FROM members WHERE bookID = '${bookID}'`;
+    pool.query(bookMembersQuery, (err, results)=>{
+      if (err) {
+        reject(err);
+      } else {
+        resolve(results);
+      }
+    });
+  });  
+}
+
+const getScore = (scoreID) => {
+  return new Promise((resolve, reject) => {
+    const scoreQuery = `SELECT score FROM scores WHERE scoreID = '${scoreID}'`;
+    pool.query(scoreQuery, (err, results)=>{
+      if (err) {
+        reject(err);
+      } else {
+        resolve(results);
+      }
+    });
+  });
+}
+
 const getBookName = (bookID) => {
   return new Promise((resolve, reject) => {
     const bookNameQuery = `SELECT bookName FROM books WHERE bookID = '${bookID}'`;
     pool.query(bookNameQuery, (err, results)=>{
+      if (err) {
+        reject(err);
+      } else {
+        resolve(results);
+      }
+    });
+  });  
+}
+
+const getMemberName = (email) => {
+  return new Promise((resolve, reject) => {
+    const memberNameQuery = `SELECT username FROM users WHERE email = '${email}'`;
+    pool.query(memberNameQuery, (err, results)=>{
       if (err) {
         reject(err);
       } else {
@@ -131,5 +171,8 @@ module.exports = {
   getBooksFromDB,
   getWalletIDFromDB,
   createNewBook,
-  getBookName
+  getBookName,
+  getBookMembers,
+  getScore,
+  getMemberName
 };

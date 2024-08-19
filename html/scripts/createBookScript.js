@@ -1,7 +1,6 @@
 document.getElementById('new-book').addEventListener('submit', async function(event) {
     event.preventDefault();
     const bookName = document.getElementById('book-name').value;
-    console.log(bookName);
 
     const email = getEmailFromJWT();
     try {

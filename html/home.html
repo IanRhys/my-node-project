@@ -11,9 +11,10 @@
 
     <header>
         <div id="top-header">
-            <div id = "logo">
+            <a id = "logo" href = "http://localhost:3000/bookshelf">
                 <img src="images/logo.png" />
-            </div>
+
+            </a>
             <nav>
                 <div id="profile-button">
                     <img src = "images/pfp.png" />
@@ -32,18 +33,17 @@
                 
 
             </div>
-                <div class="form-popup" id="myForm">
-                    <form id = "new-book" class="form-container">
-                        <h1>New Book</h1>
-                  
-                        <label for="book-name"><b>Book Name</b></label>
-                        <input type="text" placeholder="Enter Book Name" name="book-name" id = "book-name" required>
-                        <div id = "button-container">
-                            <button type="button" class="btn cancel" onclick="closeForm()">Cancel</button>
-                            <button type="submit" class="btn">Create Book</button>    
-                        </div>
-                    </form>
-                </div>
+            <div class="form-popup" id="myForm">
+                <form id = "new-book" class="form-container">
+                    <h1>New Book</h1>
+                    <label for="book-name"><b>Book Name</b></label>
+                    <input type="text" placeholder="Enter Book Name" name="book-name" id = "book-name" required>
+                    <div id = "button-container">
+                        <button type="button" class="btn cancel" onclick="closeForm()">Cancel</button>
+                        <button type="submit" class="btn">Create Book</button>    
+                    </div>
+                </form>
+            </div>
             <div class = "books">
                 Joined Books
                 <div class = "divider"></div>

@@ -5,15 +5,15 @@
     <title>
         Book View
     </title>
-    <link rel="stylesheet" href="css/home-style.css">
+    <link rel="stylesheet" href="css/book-view-style.css">
 </head>
-<body>
+<body onload = getMembers()>
 
     <header>
         <div id="top-header">
-            <div id = "logo">
+            <a id = "logo" href = "http://localhost:3000/bookshelf">
                 <img src="images/logo.png" />
-            </div>
+            </a>
             <nav>
                 <div id="profile-button">
                     <img src = "images/pfp.png" />
@@ -21,4 +21,58 @@
             </nav>
         </div>
     </header>
+
+    <main>
+        <div>
+            <div id = "book-name">
+
+            </div>
+            Leaderboard
+            <ol id = "list-of-members">
+
+            </ol>
+            <ol id = "list-of-scores">
+
+            </ol>
+            <div class = "button-container">
+                <div id = "week-selector">
+
+                </div>
+                <button id = "make-picks" class = "button">
+                    Make Picks
+                </button>
+                <button id = "choose-games" class = "button">
+                    Choose Games
+                </button>
+                <button id = "Add Member" class = "button" onclick = openAddMemberForm()>
+                    Add Member
+                </button>
+                <button id = "delete-book" class = "button">
+                    Delete Book
+                </button>
+            </div>
+        </div>
+        <div class="form-popup" id="add-member">
+            <form id = "add-member-form" class="form-container">
+                <h1>New Member</h1>
+                <label for="new-member-email"><b>Email:</b></label>
+                <input type="text" placeholder="Enter User's Email" name="new-member-email" id = "new-member-email" required>
+                <div id = "button-container">
+                    <button type="button" class="btn cancel" onclick="closeForm()">Cancel</button>
+                    <button type="submit" class="btn" id = "add-member-submit">Add Member</button>    
+                </div>
+            </form>
+        </div>
+    </main>
 </body>
+<script>
+    function openAddMemberForm() {
+        document.getElementById("add-member").style.display = "block";
+    }
+
+    function closeForm() {
+        document.getElementById("add-member").style.display = "none";
+    }
+</script>
+
+<script src = 'scripts/bookViewScripts.js'></script>
