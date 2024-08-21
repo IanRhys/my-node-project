@@ -74,6 +74,12 @@ async function getBooks(){
                     button.style["border-radius"] = "5px";
                     button.style["margin-bottom"] = "3%";
 
+                    //this makes each book button take you to the detailed view of the one you click
+                    button.addEventListener('click', function() {
+                        const URL = 'http://localhost:3000/book-view?bookID=' + button.value;
+                        window.location.href = URL;
+                    });
+
                     // this try/catch block attempts to get the name of each book
                     // to display the name instead of the bookID
                     try{

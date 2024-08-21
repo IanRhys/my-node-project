@@ -151,6 +151,36 @@ const getMemberName = (email) => {
   });  
 }
 
+const addMember = (bookID, email, joinedBookColumn, memberNumber) => {
+  return new Promise((resolve, reject) => {
+    const bookWalletQuery = `UPDATE bookWallets SET ${joinedBookColumn} = '${bookID}' WHERE email = '${email}'`;
+    pool.query(bookWalletQuery, (err, results)=>{
+      if (err) {
+        reject(err);
+      } else {
+        resolve(results);
+      }
+    });
+    const bookMemberQuery = `UPDATE members SET ${memberNumber} = '${email}' WHERE bookID = '${bookID}'`;
+    pool.query(bookMemberQuery, (err, results)=>{
+      if (err) {
+        reject(err);
+      } else {
+        resolve(results);
+      }
+    });
+    const scoreID = bookID + email;
+    const bookScoreQuery = `INSERT INTO scores SET scoreID = '${scoreID}', score = 0`;
+    pool.query(bookScoreQuery, (err, results)=>{
+      if (err) {
+        reject(err);
+      } else {
+        resolve(results);
+      }
+    });
+  });  
+}
+
 module.exports = {
   createTable,
   checkRecordExists,
@@ -160,5 +190,6 @@ module.exports = {
   getBookName,
   getBookMembers,
   getScore,
-  getMemberName
+  getMemberName,
+  addMember
 };

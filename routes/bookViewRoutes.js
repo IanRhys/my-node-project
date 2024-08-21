@@ -3,14 +3,13 @@ const router = express.Router();
 
 const { getBookMembers,
     getScore,
-    getMemberName
+    getMemberName,
+    addMember
  } = require("../utils/sqlFunctions");
 
 router.get("/:bookID", async (req, res) =>{
     try{
-        console.log("in the router for getting members");
         const bookID = req.params.bookID;
-        console.log(bookID);
         const members = await getBookMembers(bookID);
         const membersArray = [];
         if(members[0].member1 != null){
@@ -86,4 +85,57 @@ router.get("/:bookID", async (req, res) =>{
 }
 );
 
+router.post("/addMember", async (req, res) =>{
+    console.log('bookID from the router');
+    const { email, bookID, joinedBookColumn} = req.body;
+    console.log(email);
+    console.log(bookID);
+    console.log(joinedBookColumn);
+    let memberNumber;
+    try{
+        members = await getBookMembers(bookID);
+        if(members[0].member2 == null){
+            memberNumber = 'member2';
+        }
+        else if(members[0].member3 == null){
+            memberNumber = 'member3';
+        }
+        else if(members[0].member4 == null){
+            memberNumber = 'member4';
+        }
+        else if(members[0].member5 == null){
+            memberNumber = 'member5';
+        }
+        else if(members[0].member6 == null){
+            memberNumber = 'member6';
+        }
+        else if(members[0].member7 == null){
+            memberNumber = 'member7';
+        }
+        else if(members[0].member8 == null){
+            memberNumber = 'member8';
+        }
+        else if(members[0].member9 == null){
+            memberNumber = 'member9';
+        }
+        else if(members[0].member10 == null){
+            memberNumber = 'member10';
+        }
+        else{
+            throw error;
+        }
+    }
+    catch(error){
+        console.error(error);
+        res.status(500).json({ error: 'An error occurred while checking for member spots' });
+        return;
+    }
+    try{
+        await addMember(bookID, email, joinedBookColumn, memberNumber);
+    }
+    catch(error){
+        console.error(error);
+        res.status(500).json({ error: 'An error occurred while adding member' });
+    }
+});
 module.exports = router;

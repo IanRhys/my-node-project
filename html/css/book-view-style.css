@@ -121,3 +121,41 @@ body{
       align-content: space-around;
       gap: 2%;
   }
+
+  #leaderboard{
+    padding-left: 0;
+    width: 50%;
+  }
+
+  .row {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 40px;
+    border-bottom: 1px solid #AFAFAF;
+  }
+  
+  .name {
+    position: relative;
+    display: inline-block;
+    width: 80%;
+    line-height: 45px;
+  }
+  
+  .score {
+    position: relative;
+    display: inline-block;
+    width: 20%;
+  }
+  
+  .row:nth-child(1) {
+    background: rgba(255, 217, 0, 0.5);
+  }
+  
+  .row:nth-child(2) {
+    background: #c0c0c07a;
+  }
+  
+  .row:nth-child(3) {
+    background: #cd80327b;
+  }

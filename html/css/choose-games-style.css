@@ -5,6 +5,15 @@ html, body{
     margin: 0px;
 }
 
+body{
+  background-image: url('../images/cfb-background.jpg');
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: center center;
+  height: fit-content;
+}
+
 #top-header {
     background-color: rgb(139, 0, 0);
     border-bottom: 3px solid hsl(0, 59%, 20%);
