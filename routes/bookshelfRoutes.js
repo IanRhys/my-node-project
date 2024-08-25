@@ -47,6 +47,7 @@ router.post('/createBook', async (req, res)=>{
         await createTable(membersSchema);
         await createTable(scoresSchema);
         await createNewBook(email, column, bookID, bookName);
+        res.status(201).json({ message: 'Book created successfully', bookID });
     }
     catch (error) {
         // Handle any errors that might occur

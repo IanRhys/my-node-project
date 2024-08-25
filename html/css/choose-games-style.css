@@ -104,3 +104,7 @@ body{
     align-items: center;
     gap: 1em;
   }
+
+  #chosen-games-list{
+    padding-left: 0;
+  }

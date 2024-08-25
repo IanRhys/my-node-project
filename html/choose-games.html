@@ -8,12 +8,11 @@
     <link rel="stylesheet" href="css/choose-games-style.css">
 </head>
 <body onload="getAllConferenceGames()">
-
     <header>
         <div id="top-header">
-            <div id = "logo">
+            <a id = "logo" href = "http://localhost:3000/bookshelf">
                 <img src="images/logo.png" />
-            </div>
+            </a>
             <nav>
                 <div id="profile-button">
                     <img src = "images/pfp.png" />
@@ -23,7 +22,19 @@
     </header>
 
     <main>
-        <form id = "container">
+        <div id = 'container'>
+            <form id = 'chosen-games'>
+                Chosen Games:
+                <ul id = 'chosen-games-list'>
+
+                </ul>
+                <button type = 'submit'>
+                    Choose Games
+                </button>    
+                </form> 
+        </div>
+        
+        <div id = "container">
             <div class = "conference-holder">
                 <img class = conference-logo src = "images/Southeastern_Conference_logo.svg.png">
                 <ul id = "SEC" class = "games-list"></ul>
@@ -73,53 +84,8 @@
                 <img class = conference-logo src = "images/Sun_Belt_Conference_2020_logo_and_name.svg.png">
                 <ul id = "SBC" class = "games-list"></ul>
             </div>
-        </form>    
-        <script>
-
-            function getAllConferenceGames(){
-                getGames('ACC');
-                getGames('SEC');
-                getGames('B12');
-                getGames('B1G');
-                getGames('PAC');
-                getGames('CUSA');
-                getGames('MAC');
-                getGames('MWC');
-                getGames('Ind');
-                getGames('SBC');
-                getGames('AAC');
-            }
-
-            async function getGames(conferenceAbbreviation){
-                const list = document.getElementById(conferenceAbbreviation);
-                const baseURL = 'http://localhost:3000/getGames/';
-                const res = await fetch(baseURL + conferenceAbbreviation,
-                {
-                        method: 'GET'
-                })
-                console.log(res);
-                const data = await res.json();
-                const homeTeams = [];
-                const awayTeams = [];
-                const teamMatchups = [];
-                for(var i = 0; i < data.length; i++){
-                    homeTeams[i] = data[i].homeTeam;
-                    awayTeams[i] = data[i].awayTeam;
-                    teamMatchups[i] = data[i].homeTeam + ' vs. ' + data[i].awayTeam;
-                    console.log(teamMatchups[i]);
-                }
-                for(i = 0; i < teamMatchups.length; ++i){
-                    let button = document.createElement('button');
-                    button.innerText = teamMatchups[i];
-                    button.className = 'button';
-                    button.style["display"] = "block";
-                    button.style["font-size"] = "20px";
-                    button.style["border"] = "3px solid hsl(44, 33%, 50%)";
-                    button.style["border-radius"] = "5px";
-                    button.style["margin-bottom"] = "3px";
-                    list.appendChild(button);
-                }
-            }
-        </script>
+        </div>  
+        
+        <script src = 'scripts/chooseGamesScripts.js'></script>
     </main>
 </body>

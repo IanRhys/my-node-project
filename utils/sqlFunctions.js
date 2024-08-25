@@ -181,6 +181,32 @@ const addMember = (bookID, email, joinedBookColumn, memberNumber) => {
   });  
 }
 
+const createNewGamesRow = (key)=>{
+  return new Promise((resolve, reject) => {
+    const saveChosenGameQuery = `INSERT INTO games SET gamesID = '${key}'`;
+    pool.query(saveChosenGameQuery, (err, results)=>{
+      if (err) {
+        reject(err);
+      } else {
+        resolve(results);
+      }
+    });
+  });
+}
+
+const saveChosenGameToDB = (key, gameID, column)=>{
+  return new Promise((resolve, reject) => {
+    const saveChosenGameQuery = `UPDATE games SET ${column} = '${gameID}' WHERE gamesID = '${key}'`;
+    pool.query(saveChosenGameQuery, (err, results)=>{
+      if (err) {
+        reject(err);
+      } else {
+        resolve(results);
+      }
+    });
+  });  
+}
+
 module.exports = {
   createTable,
   checkRecordExists,
@@ -191,5 +217,7 @@ module.exports = {
   getBookMembers,
   getScore,
   getMemberName,
-  addMember
+  addMember,
+  createNewGamesRow,
+  saveChosenGameToDB
 };

@@ -1,3 +1,8 @@
+function loadBookView(){
+    getMembers();
+    getGames();
+}
+
 async function getMembers(){
     const names = document.getElementById("leaderboard");
     const scores = document.getElementById("list-of-scores");
@@ -36,6 +41,10 @@ async function getMembers(){
     }
 }
 
+async function getGames(){
+    
+}
+
 async function deleteBook(bookID){
 
 }
@@ -44,9 +53,20 @@ async function makePicks(pickID){
 
 }
 
-function chooseGames(week){
-
-}
+document.getElementById('choose-games-form').addEventListener('submit', async function(event){
+    event.preventDefault();
+    const week = document.getElementById('choose-week').value;
+    const searchParams = new URLSearchParams(window.location.search);
+    const bookID = searchParams.get('bookID');
+    try{
+        //window.location.assign('https:/localhost:3000/choose-games?bookID='+ bookID + '?week=' + week);
+        window.location.assign('choose-games?bookID=' + bookID + '&week=' + week);
+    }
+    catch(error){
+        alert('Something went wrong');
+        console.error('There was a problem with the fetch operation:', error);
+    }
+});
 
 document.getElementById('add-member-form').addEventListener('submit', async function(event) {
     console.log("should be adding event listener");
@@ -59,7 +79,6 @@ document.getElementById('add-member-form').addEventListener('submit', async func
         addMember(bookID, email);
     }
     catch(error){
-
         console.error('There was a problem with the fetch operation:', error);
     }
     window.location.reload();

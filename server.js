@@ -57,21 +57,21 @@ const verifyToken = (req, res, next) => {
 
 // Include route files
 const getGamesRoute = require('./routes/getGames');
-const productsRoute = require('./routes/products');
 const authRoutes = require('./routes/authRoutes');
 const bookshelfRoute = require('./routes/bookshelfRoutes');
 const bookViewRoutes = require('./routes/bookViewRoutes');
+const chooseGamesRoutes = require('./routes/chooseGamesRoutes');
 
 // Use routes
 app.use('/getGames', getGamesRoute);
 app.use('/bookshelfRoutes', bookshelfRoute);
-app.use('/products', productsRoute);
+app.use('/chooseGamesRoutes', chooseGamesRoutes);
 app.use('/bookViewRoutes', bookViewRoutes);
 app.use("/", authRoutes);
 app.use(express.static('html'));
 
 //sends pages for each URL ending
-app.get('/choose-games', (req, res) => {
+app.get('/choose-games', verifyToken, (req, res) => {
     res.sendFile(path.join(__dirname, '/html/choose-games.html'));
 });
 app.get('/book-view', verifyToken, (req, res) => {

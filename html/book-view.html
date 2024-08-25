@@ -7,7 +7,7 @@
     </title>
     <link rel="stylesheet" href="css/book-view-style.css">
 </head>
-<body onload = getMembers()>
+<body onload = loadBookView()>
 
     <header>
         <div id="top-header">
@@ -31,17 +31,19 @@
             <ul id = "leaderboard">
                 Leaderboard
             </ul>
-            <div class = "button-container">
-                <div id = "week-selector">
 
-                </div>
+            <ul id = "upcoming-games">
+                Upcoming Games
+            </ul>
+
+            <div class = "button-container">
                 <button id = "make-picks" class = "button">
                     Make Picks
                 </button>
-                <button id = "choose-games" class = "button">
+                <button id = "choose-games-button" class = "button" onclick = openChooseGamesForm()>
                     Choose Games
                 </button>
-                <button id = "Add Member" class = "button" onclick = openAddMemberForm()>
+                <button id = "add-member-button" class = "button" onclick = openAddMemberForm()>
                     Add Member
                 </button>
                 <button id = "delete-book" class = "button">
@@ -60,15 +62,29 @@
                 </div>
             </form>
         </div>
+        <div class="form-popup" id="choose-games">
+            <form id = "choose-games-form" class="form-container">
+                <h1>Choose Games</h1> 
+                <label for="choose-week"><b>Week:</b></label>
+                <input type="text" placeholder="Week" name="choose-week" id = "choose-week" required>
+                <div id = "button-container">
+                    <button type="button" class="btn cancel" onclick="closeForm()">Cancel</button>
+                    <button type="submit" class="btn" id = "choose-week-submit">Choose Games</button>    
+                </div>
+            </form>
+        </div>
     </main>
 </body>
 <script>
     function openAddMemberForm() {
         document.getElementById("add-member").style.display = "block";
     }
-
+    function openChooseGamesForm(){
+        document.getElementById("choose-games").style.display = "block";
+    }
     function closeForm() {
         document.getElementById("add-member").style.display = "none";
+        document.getElementById("choose-games").style.display = "none";
     }
 </script>
 

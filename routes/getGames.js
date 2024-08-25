@@ -3,11 +3,10 @@ const express = require('express');
 const router = express.Router();
 
 // Define a route
-router.get('/:conferenceAbbreviation', (req, res) => {
+router.post('/', (req, res) => {
     var cfb = require('cfb.js');
     var defaultClient = cfb.ApiClient.instance;
-    const params = req.params;
-
+    const { week, conference } = req.body;
     // Configure API key authorization: ApiKeyAuth
     var ApiKeyAuth = defaultClient.authentications['ApiKeyAuth'];
     ApiKeyAuth.apiKey = "Bearer uUROuvdrdvQZVcrWw7i4V9/p3QfWJFiZYPLDDG5VpJ3+PWikQi+Y9uBOWNMYyQcS";
@@ -17,8 +16,8 @@ router.get('/:conferenceAbbreviation', (req, res) => {
     var year = 2024; // Number | Year/season filter for games
     
     var opts = { 
-        'week': 1,
-        'conference' : params.conferenceAbbreviation
+        'week': week,
+        'conference' : conference
       };
     apiInstance.getGames(year, opts).then(function(data) {
         const homeTeams = [];
