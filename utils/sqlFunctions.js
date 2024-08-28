@@ -207,6 +207,20 @@ const saveChosenGameToDB = (key, gameID, column)=>{
   });  
 }
 
+const getWeekGames = (bookID, week) => {
+  return new Promise((resolve, reject) => {
+    const gamesID = bookID + week;
+    const getWeekGamesQuery = `SELECT * FROM games WHERE gamesID = '${gamesID}'`;
+    pool.query(getWeekGamesQuery, (err, results)=>{
+      if (err) {
+        reject(err);
+      } else {
+        resolve(results);
+      }
+    });
+  });  
+}
+
 module.exports = {
   createTable,
   checkRecordExists,
@@ -219,5 +233,6 @@ module.exports = {
   getMemberName,
   addMember,
   createNewGamesRow,
-  saveChosenGameToDB
+  saveChosenGameToDB,
+  getWeekGames
 };

@@ -13,9 +13,9 @@ body{
 }
 
 #top-header {
-    background-color: rgb(139, 0, 0);
-    border-bottom: 3px solid hsl(0, 59%, 20%);
-    height: 80px;
+   background-color: rgb(35, 35, 35);
+   border-bottom: 3px solid rgba(50, 50, 50, 0.8);
+   height: 80px;
 }
 #logo{
     float: left;

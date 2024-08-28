@@ -14,8 +14,8 @@ body{
 }
 
 #top-header {
-    background-color: rgb(139, 0, 0);
-    border-bottom: 3px solid hsl(0, 59%, 20%);
+    background-color: rgb(35, 35, 35);
+    border-bottom: 3px solid rgba(50, 50, 50, 0.8);
     height: 80px;
 }
 #logo{
@@ -122,9 +122,22 @@ body{
       gap: 2%;
   }
 
+  .label{
+    background-color: rgba(0, 0, 0, 0.735);
+
+  }
+
   #leaderboard{
     padding-left: 0;
     width: 50%;
+    background-color: rgba(0, 0, 0, 0.735);
+  }
+
+  #upcoming-games{
+    padding-left: 0;
+    width: 50%;
+    background-color: rgba(0, 0, 0, 0.735);
+    text-align: center;
   }
 
   .row {
@@ -139,16 +152,19 @@ body{
   .name {
     position: relative;
     display: inline-block;
-    font-weight: bold;
     width: 80%;
     line-height: 45px;
+    color: white;
+    text-wrap:nowrap;
   }
   
   .score {
-    position: relative;
+    position:relative;
     display: inline-block;
     width: 20%;
+    color: white;
     font-weight: bold;
+    text-wrap:nowrap;
   }
   
   .row:nth-child(1) {
@@ -161,4 +177,13 @@ body{
   
   .row:nth-child(3) {
     background: #cd80327b;
+  }
+
+  .upcoming-game{
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 40px;
+    border-bottom: 1px solid #AFAFAF;
+    background-color: #353535cb;
   }

@@ -4,7 +4,8 @@ const router = express.Router();
 const { getBookMembers,
     getScore,
     getMemberName,
-    addMember
+    addMember,
+    getWeekGames
  } = require("../utils/sqlFunctions");
 
 router.get("/:bookID", async (req, res) =>{
@@ -127,7 +128,7 @@ router.post("/addMember", async (req, res) =>{
     }
     catch(error){
         console.error(error);
-        res.status(500).json({ error: 'An error occurred while checking for member spots' });
+        response.status(500).json({ error: 'An error occurred while checking for member spots' });
         return;
     }
     try{
@@ -135,7 +136,105 @@ router.post("/addMember", async (req, res) =>{
     }
     catch(error){
         console.error(error);
-        res.status(500).json({ error: 'An error occurred while adding member' });
+        response.status(500).json({ error: 'An error occurred while adding member' });
     }
 });
+
+router.post("/getWeekGames", async (req, res) => {
+    console.log("in the getWeekGames");
+    const gameIDArray = [];
+    const bookID = req.body.bookID;
+    const week = req.body.week;
+    try{
+        response = await getWeekGames(bookID, week);
+        if(response[0].game1 != null){
+            gameIDArray.push(response[0].game1);
+        }
+        if(response[0].game2 != null){
+            gameIDArray.push(response[0].game2);
+        }
+        if(response[0].game3 != null){
+            gameIDArray.push(response[0].game3);
+        }
+        if(response[0].game4 != null){
+            gameIDArray.push(response[0].game4);
+        }
+        if(response[0].game5 != null){
+            gameIDArray.push(response[0].game5);
+        }
+        if(response[0].game6 != null){
+            gameIDArray.push(response[0].game6);
+        }
+        if(response[0].game7 != null){
+            gameIDArray.push(response[0].game7);
+        }
+        if(response[0].game8 != null){
+            gameIDArray.push(response[0].game8);
+        }
+        if(response[0].game9 != null){
+            gameIDArray.push(response[0].game9);
+        }
+        if(response[0].game10 != null){
+            gameIDArray.push(response[0].game10);
+        }
+        if(response[0].game11 != null){
+            gameIDArray.push(response[0].game11);
+        }
+        if(response[0].game12 != null){
+            gameIDArray.push(response[0].game12);
+        }
+        if(response[0].game13 != null){
+            gameIDArray.push(response[0].game13);
+        }
+        if(response[0].game14 != null){
+            gameIDArray.push(response[0].game14);
+        }
+        if(response[0].game15 != null){
+            gameIDArray.push(response[0].game15);
+        }  
+    }
+    catch(error){
+        console.error(error);
+    }
+
+    
+
+
+
+    const gamesArray = []; //array to hold objects containing the gameID and matchup
+
+    const promises = gameIDArray.map(gameID => {
+        console.log(gameID);
+        var cfb = require('cfb.js');
+        var defaultClient = cfb.ApiClient.instance;
+    
+        // Configure API key authorization: ApiKeyAuth
+        var ApiKeyAuth = defaultClient.authentications['ApiKeyAuth'];
+        ApiKeyAuth.apiKey = "Bearer uUROuvdrdvQZVcrWw7i4V9/p3QfWJFiZYPLDDG5VpJ3+PWikQi+Y9uBOWNMYyQcS";
+    
+        var apiInstance = new cfb.GamesApi();
+
+        const year = 2024;
+    
+        const opts = {
+            id: gameID
+        }
+        return apiInstance.getGames(year, opts).then(data => {
+            const matchup = data[0].homeTeam + ' vs. ' + data[0].awayTeam;
+            const gameObject = {
+                id: gameID,
+                matchup: matchup
+            }
+            gamesArray.push(gameObject);
+            console.log(gameObject);
+        }, function(error) {
+            console.error(error);
+        });
+    })
+ 
+    await Promise.all(promises); //waits for all API calls to finish before proceeding
+
+    res.json(gamesArray);
+})
+
 module.exports = router;

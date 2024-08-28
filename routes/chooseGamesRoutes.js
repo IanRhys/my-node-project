@@ -8,11 +8,6 @@ const {
     saveChosenGameToDB
 } = require('../utils/sqlFunctions');
 
-// router.get('/:bookID/:week', (req, res) => {
-//     console.log(bookID);
-//     console.log(week);
-// });
-
 router.post('/saveChosenGamesToDB', async (req, res)=> {
     const gameIDs = req.body.ids;
     const week = req.body.week;

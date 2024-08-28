@@ -7,20 +7,16 @@ async function getMembers(){
     const names = document.getElementById("leaderboard");
     const scores = document.getElementById("list-of-scores");
     try{
-        console.log("attempting to get members");
         const searchParams = new URLSearchParams(window.location.search);
         const bookID = searchParams.get('bookID');
-        console.log(bookID);
         const res = await fetch('http://localhost:3000/bookViewRoutes/'+ bookID);
-        console.log(res);
 
         if(!res.ok){
             throw new Error(`HTTP error! Status: ${res.status}`);
         }
 
         const members = await res.json();
-        console.log(members);
-        const row = document.createElement("div");
+
         members.forEach(member => {
             const row = document.createElement("div");
             const name = document.createElement("div");
@@ -42,7 +38,48 @@ async function getMembers(){
 }
 
 async function getGames(){
-    
+
+    //get the current week from the current Date
+    const currentDate = new Date();
+    const weekNumber = getDateWeek();
+    const cfbWeekNumber = weekNumber - 34; //week 1 starts in the 35th week of 2024
+
+    //get the bookID from the URL
+    const searchParams = new URLSearchParams(window.location.search);
+    const bookID = searchParams.get('bookID');
+
+    //payload for the post request
+    const payload = {
+        bookID: bookID,
+        week: cfbWeekNumber
+    }
+
+    const res = await fetch('http://localhost:3000/bookViewRoutes/getWeekGames',{
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+    });
+
+    if (!res.ok) {
+        throw new Error(`HTTP error! Status: ${res.status}`);
+    }
+    const upcomingGames = await res.json();
+    console.log("currentGames is ");
+    console.log(upcomingGames);
+    upcomingGames.forEach(game => {
+        const upcomingGamesList = document.getElementById("upcoming-games");
+        const upcomingGame = document.createElement("div");
+
+        const upcomingMatchupName = document.createElement("div");
+        upcomingGame.className = "upcoming-game";
+        upcomingMatchupName.className = "name";
+        upcomingMatchupName.innerText = game.matchup;
+        upcomingMatchupName.id = game.id;
+        upcomingGame.append(upcomingMatchupName);
+        upcomingGamesList.append(upcomingGame);
+    })
 }
 
 async function deleteBook(bookID){
@@ -51,6 +88,23 @@ async function deleteBook(bookID){
 
 async function makePicks(pickID){
 
+}
+
+function getDateWeek(date) {
+    const currentDate = 
+        (typeof date === 'object') ? date : new Date();
+    const januaryFirst = 
+        new Date(currentDate.getFullYear(), 0, 1);
+    const daysToNextMonday = 
+        (januaryFirst.getDay() === 1) ? 0 : 
+        (7 - januaryFirst.getDay()) % 7;
+    const nextMonday = 
+        new Date(currentDate.getFullYear(), 0, 
+        januaryFirst.getDate() + daysToNextMonday);
+ 
+    return (currentDate < nextMonday) ? 52 : 
+    (currentDate > nextMonday ? Math.ceil(
+    (currentDate - nextMonday) / (24 * 3600 * 1000) / 7) : 1);
 }
 
 document.getElementById('choose-games-form').addEventListener('submit', async function(event){
