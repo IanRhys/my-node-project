@@ -16,61 +16,61 @@ router.get("/:bookID", async (req, res) =>{
         if(members[0].member1 != null){
             const memberScore = await getScore(bookID+members[0].member1);
             const memberName = await getMemberName(members[0].member1);
-            const member = {name: memberName[0].username, score: memberScore[0].score};
+            const member = {name: memberName[0].username, score: memberScore[0].score, email: members[0].member1, owner: true};
             membersArray.push(member);
         }
         if(members[0].member2 != null){
             const memberScore = await getScore(bookID+members[0].member2);
             const memberName = await getMemberName(members[0].member2);
-            const member = {name: memberName[0].username, score: memberScore[0].score};
+            const member = {name: memberName[0].username, score: memberScore[0].score, email: members[0].member2, owner: false};
             membersArray.push(member);
         }
         if(members[0].member3 != null){
             const memberScore = await getScore(bookID+members[0].member3);
             const memberName = await getMemberName(members[0].member3);
-            const member = {name: memberName[0].username, score: memberScore[0].score};
+            const member = {name: memberName[0].username, score: memberScore[0].score, email: members[0].member3, owner: false};
             membersArray.push(member);
         }
         if(members[0].member4 != null){
             const memberScore = await getScore(bookID+members[0].member4);
             const memberName = await getMemberName(members[0].member4);
-            const member = {name: memberName[0].username, score: memberScore[0].score};
+            const member = {name: memberName[0].username, score: memberScore[0].score, email: members[0].member4, owner: false};
             membersArray.push(member);
         }
         if(members[0].member5 != null){
             const memberScore = await getScore(bookID+members[0].member5);
             const memberName = await getMemberName(members[0].member5);
-            const member = {name: memberName[0].username, score: memberScore[0].score};
+            const member = {name: memberName[0].username, score: memberScore[0].score, email: members[0].member5, owner: false};
             membersArray.push(member);
         }
         if(members[0].member6 != null){
             const memberScore = await getScore(bookID+members[0].member6);
             const memberName = await getMemberName(members[0].member6);
-            const member = {name: memberName[0].username, score: memberScore[0].score};
+            const member = {name: memberName[0].username, score: memberScore[0].score, email: members[0].member6, owner: false};
             membersArray.push(member);
         }
         if(members[0].member7 != null){
             const memberScore = await getScore(bookID+members[0].member7);
             const memberName = await getMemberName(members[0].member7);
-            const member = {name: memberName[0].username, score: memberScore[0].score};
+            const member = {name: memberName[0].username, score: memberScore[0].score, email: members[0].member7, owner: false};
             membersArray.push(member);
         }
         if(members[0].member8 != null){
             const memberScore = await getScore(bookID+members[0].member8);
             const memberName = await getMemberName(members[0].member8);
-            const member = {name: memberName[0].username, score: memberScore[0].score};
+            const member = {name: memberName[0].username, score: memberScore[0].score, email: members[0].member8, owner: false};
             membersArray.push(member);
         }
         if(members[0].member9 != null){
             const memberScore = await getScore(bookID+members[0].member9);
             const memberName = await getMemberName(members[0].member9);
-            const member = {name: memberName[0].username, score: memberScore[0].score};
+            const member = {name: memberName[0].username, score: memberScore[0].score, email: members[0].member9, owner: false};
             membersArray.push(member);
         }
         if(members[0].member10 != null){
             const memberScore = await getScore(bookID+members[0].member10);
             const memberName = await getMemberName(members[0].member10);
-            const member = {name: memberName[0].username, score: memberScore[0].score};
+            const member = {name: memberName[0].username, score: memberScore[0].score, email: members[0].member10, owner: false};
             membersArray.push(member);
         }
 

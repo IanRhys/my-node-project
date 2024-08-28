@@ -179,11 +179,19 @@ body{
     background: #cd80327b;
   }
 
-  .upcoming-game{
+  .upcoming-game-row{
     position: relative;
     display: block;
     width: 100%;
     height: 40px;
     border-bottom: 1px solid #AFAFAF;
     background-color: #353535cb;
+  }
+
+  .button{
+    display: none;
+  }
+
+  #make-picks-button{
+    display: inline-block;
   }

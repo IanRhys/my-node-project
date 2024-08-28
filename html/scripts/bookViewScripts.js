@@ -1,6 +1,7 @@
 function loadBookView(){
     getMembers();
     getGames();
+    hideButtons();
 }
 
 async function getMembers(){
@@ -14,10 +15,17 @@ async function getMembers(){
         if(!res.ok){
             throw new Error(`HTTP error! Status: ${res.status}`);
         }
+        const email = getEmailFromJWT(); //to check if user is the owner of the book
 
         const members = await res.json();
 
-        members.forEach(member => {
+        members.forEach(member => { 
+            //displays the admin buttons to the owner of the book
+            if(member.email == email && member.owner){
+                document.getElementById("add-member-button").style.display = "inline-block";
+                document.getElementById("choose-games-button").style.display = "inline-block";
+                document.getElementById("delete-book-button").style.display = "inline-block";
+            }
             const row = document.createElement("div");
             const name = document.createElement("div");
             const score = document.createElement("div");
@@ -33,7 +41,7 @@ async function getMembers(){
         
     }
     catch(error){
-
+        console.error(error);
     }
 }
 
@@ -73,7 +81,7 @@ async function getGames(){
         const upcomingGame = document.createElement("div");
 
         const upcomingMatchupName = document.createElement("div");
-        upcomingGame.className = "upcoming-game";
+        upcomingGame.className = "upcoming-game-row";
         upcomingMatchupName.className = "name";
         upcomingMatchupName.innerText = game.matchup;
         upcomingMatchupName.id = game.id;
@@ -193,4 +201,24 @@ async function addMember(bookID, email){
         
         console.error('There was a problem with the fetch operation:', error);
     }
+}
+
+//using the JWT stored in the cookie, get the email
+//to be used as a Primary Key for database queries
+function getEmailFromJWT(){
+    const token = readCookie('access_token', document.cookie);
+    const arrayToken = token.split('.');
+    const tokenPayload = JSON.parse(atob(arrayToken[1]));
+    return tokenPayload.email;
+}
+
+function readCookie(name, cookieString) {
+	var nameEQ = name + "=";
+	var ca = cookieString.split(';');
+	for(var i=0;i < ca.length;i++) {
+		var c = ca[i];
+		while (c.charAt(0)==' ') c = c.substring(1,c.length);
+		if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+	}
+	return null;
 }
