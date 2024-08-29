@@ -138,6 +138,7 @@ router.post("/addMember", async (req, res) =>{
         console.error(error);
         response.status(500).json({ error: 'An error occurred while adding member' });
     }
+    res.send();
 });
 
 router.post("/getWeekGames", async (req, res) => {
@@ -235,6 +236,43 @@ router.post("/getWeekGames", async (req, res) => {
     await Promise.all(promises); //waits for all API calls to finish before proceeding
 
     res.json(gamesArray);
+})
+
+router.post("/getLine", async (req, res) => {
+    console.log("in getLine route");
+
+    const week = req.body.week;
+    const team = req.body.team;
+    var cfb = require('cfb.js');
+    var defaultClient = cfb.ApiClient.instance;
+    
+    // Configure API key authorization: ApiKeyAuth
+    var ApiKeyAuth = defaultClient.authentications['ApiKeyAuth'];
+    ApiKeyAuth.apiKey = "Bearer uUROuvdrdvQZVcrWw7i4V9/p3QfWJFiZYPLDDG5VpJ3+PWikQi+Y9uBOWNMYyQcS";
+    
+    var apiInstance = new cfb.BettingApi();
+    console.log('week is ' , week);
+    console.log('team is -' , team, '-');
+    const opts = {
+         week: week,
+         team: team,
+         year: 2024
+    }
+
+    apiInstance.getLines(opts).then(data=>{
+        try{
+            console.log('API called successfully. Returned data: ' + data[0].lines[0].spread);
+        }
+        catch(error){
+            console.log(error);
+            res.json({message: "Line Unavailable"});
+            return;
+        }
+        res.json(data);
+    }, function(error) {
+
+    console.error(error);
+    })
 })
 
 module.exports = router;

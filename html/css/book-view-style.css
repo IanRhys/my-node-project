@@ -147,6 +147,7 @@ body{
     height: 40px;
     border-bottom: 1px solid #AFAFAF;
     background-color: #353535cb;
+    text-wrap: nowrap;
   }
   
   .name {
@@ -193,5 +194,15 @@ body{
   }
 
   #make-picks-button{
+    display: inline-block;
+  }
+
+  .picks-row{
+    display: block;
+    text-align: center;
+    border-bottom: 1px solid #AFAFAF;
+    background-color: #353535cb;
+  }
+  .picks-button{
     display: inline-block;
   }

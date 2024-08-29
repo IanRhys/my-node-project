@@ -1,7 +1,6 @@
 function loadBookView(){
     getMembers();
-    getGames();
-    hideButtons();
+    //getGames();
 }
 
 async function getMembers(){
@@ -49,7 +48,7 @@ async function getGames(){
 
     //get the current week from the current Date
     const currentDate = new Date();
-    const weekNumber = getDateWeek();
+    const weekNumber = getDateWeek(currentDate);
     const cfbWeekNumber = weekNumber - 34; //week 1 starts in the 35th week of 2024
 
     //get the bookID from the URL
@@ -74,11 +73,9 @@ async function getGames(){
         throw new Error(`HTTP error! Status: ${res.status}`);
     }
     const upcomingGames = await res.json();
-    console.log("currentGames is ");
-    console.log(upcomingGames);
     upcomingGames.forEach(game => {
         const upcomingGamesList = document.getElementById("upcoming-games");
-        const upcomingGame = document.createElement("div");
+        const upcomingGame = document.createElement("li");
 
         const upcomingMatchupName = document.createElement("div");
         upcomingGame.className = "upcoming-game-row";
@@ -138,15 +135,22 @@ document.getElementById('add-member-form').addEventListener('submit', async func
     const bookID = searchParams.get('bookID');
     try{
         console.log("about to add member");
-        addMember(bookID, email);
+        addMember(bookID, email).then(() => {
+            window.location.reload();
+        });
+        console.log("Member added successfully");
+        // Perform any action after successful completion
+        //window.location.reload(); // Reload the page or perform another action
     }
     catch(error){
         console.error('There was a problem with the fetch operation:', error);
+        return;
     }
-    window.location.reload();
 });
 
 async function addMember(bookID, email){
+
+    console.log("attempting to add member");
     try {
         const res = await fetch('http://localhost:3000/bookshelfRoutes/' + encodeURIComponent(email), {
             method: 'GET'
@@ -195,13 +199,77 @@ async function addMember(bookID, email){
         if (!res2.ok) {
             throw new Error(`HTTP error! Status: ${res2.status}`);
         }
-        window.location.replace('http://localhost:3000/bookViewRoutes/' + bookID);
+        return Promise.resolve();
     }
     catch(error){
-        
         console.error('There was a problem with the fetch operation:', error);
+        return Promise.reject(error);
     }
 }
+
+async function loadPicksTable(){
+    console.log("in loadPciksTable");
+    const picksTable = document.getElementById("make-picks-table");
+    const currentGames = document.getElementById("upcoming-games").getElementsByTagName("div");
+    
+    const currentGamesArray = [];
+
+    //get the current week from the current Date for use in the betting line query
+    const currentDate = new Date();
+    const weekNumber = getDateWeek(currentDate);
+    const cfbWeekNumber = weekNumber - 34; //week 1 starts in the 35th week of 2024
+
+    for(i = 0; i < currentGames.length; i++){
+        console.log("i is ", i);
+        const matchupStringArray = currentGames[i].innerText.split(' ');
+        const homeTeam = matchupStringArray[0];
+        console.log('home team is ', homeTeam);
+
+        gameObject = {
+            id: currentGames[i].id,
+            matchup: currentGames[i].innerText,
+            line: 0
+        }
+        console.log(gameObject);
+        currentGamesArray.push(gameObject);
+    }
+    console.log(currentGamesArray);
+    currentGamesArray.forEach(game =>{
+        console.log("game name is ", game.matchup);
+        console.log("game id is ", game.id);
+
+        const row = document.createElement("div");
+        row.className = "picks-row";
+
+        const matchup = document.createElement("div");
+        matchup.innerText = game.matchup;
+
+        //buttons to be used for making picks
+        const coverButton = document.createElement("button");
+        const noCoverButton = document.createElement("button");
+        const outrightWinButton = document.createElement("button");
+        coverButton.id = game.id;
+        noCoverButton.id = game.id;
+        outrightWinButton.id = game.id;
+
+        coverButton.innerText = "Cover";
+        noCoverButton.innerText = "Won't Cover";
+        outrightWinButton.innerText = "Underdog Win";
+        coverButton.className = "picks-button";
+        noCoverButton.className = "picks-button";
+        outrightWinButton.className = "picks-button";
+
+        row.appendChild(matchup);
+        row.appendChild(coverButton);
+        row.appendChild(noCoverButton);
+        row.appendChild(outrightWinButton);
+
+        picksTable.appendChild(row);
+    })
+
+     
+}
+
 
 //using the JWT stored in the cookie, get the email
 //to be used as a Primary Key for database queries

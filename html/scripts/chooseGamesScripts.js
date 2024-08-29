@@ -113,7 +113,7 @@ document.getElementById('chosen-games').addEventListener('submit', async functio
         return response.json();
     })
     .then(result => {
-        window.location.replace('/book-view?' + bookID);
+        window.location.replace('/book-view?bookID=' + bookID);
     })
     .catch(error => {
         console.error('Error:', error);

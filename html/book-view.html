@@ -42,7 +42,7 @@
             </ul>
 
             <div class = "button-container">
-                <button id = "make-picks-button" class = "button">
+                <button id = "make-picks-button" class = "button" onclick = openMakePicksForm()>
                     Make Picks
                 </button>
                 <button id = "choose-games-button" class = "button" onclick = openChooseGamesForm()>
@@ -78,6 +78,14 @@
                 </div>
             </form>
         </div>
+        <div class="form-popup" id="make-picks">
+            <form id = "make-picks-form" class="form-container">
+                <h1>Make Picks</h1> 
+                <div id = "make-picks-table">
+
+                </div>
+            </form>
+        </div>
     </main>
 </body>
 <script>
@@ -85,11 +93,18 @@
         document.getElementById("add-member").style.display = "block";
     }
     function openChooseGamesForm(){
+        console.log("in choose games orm");
         document.getElementById("choose-games").style.display = "block";
+    }
+    function openMakePicksForm(){
+        console.log("in oepn Make picks form");
+        loadPicksTable();
+        document.getElementById("make-picks").style.display = "block";
     }
     function closeForm() {
         document.getElementById("add-member").style.display = "none";
         document.getElementById("choose-games").style.display = "none";
+        document.getElementById("make-picks").style.display = "none";
     }
 </script>
 
