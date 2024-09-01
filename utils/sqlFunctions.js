@@ -207,6 +207,19 @@ const saveChosenGameToDB = (key, gameID, column)=>{
   });  
 }
 
+const saveGameInfoToDB = (bookID, gameID, matchup, line)=>{
+  return new Promise((resolve, reject) => {
+    const saveGameInfoQuery = `INSERT INTO gameInfos SET gameInfoID = '${bookID + gameID}', matchup = '${matchup}', line = '${line}', score = 'UNAVAILABLE'`;
+    pool.query(saveGameInfoQuery, (err, results)=>{
+      if (err) {
+        reject(err);
+      } else {
+        resolve(results);
+      }
+    });
+  });  
+}
+
 const getWeekGames = (bookID, week) => {
   return new Promise((resolve, reject) => {
     const gamesID = bookID + week;
@@ -234,5 +247,6 @@ module.exports = {
   addMember,
   createNewGamesRow,
   saveChosenGameToDB,
-  getWeekGames
+  getWeekGames,
+  saveGameInfoToDB
 };

@@ -1,6 +1,6 @@
 function loadBookView(){
     getMembers();
-    //getGames();
+    getGames();
 }
 
 async function getMembers(){

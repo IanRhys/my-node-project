@@ -84,7 +84,24 @@
                 <img class = conference-logo src = "images/Sun_Belt_Conference_2020_logo_and_name.svg.png">
                 <ul id = "SBC" class = "games-list"></ul>
             </div>
-        </div>  
+        </div> 
+        <div class="form-popup" id="set-line">
+            <form id = "set-line-form" class="form-container">
+                <h1>Set Line</h1>
+                <h3>Who's Expected to Win?</h3> 
+                <input type = "radio" id = "home-team" name = "team">
+                <label for="home-team" id = "home-team-label"></label><br>
+                <input type = "radio" id = "away-team" name = "team">
+                <label for="away-team" id = "away-team-label"></label><br>
+                <h3>By How Much?</h3>
+                <input type = "number" step = "0.5" id = "line-amount">
+                <div id = "button-container">
+                    <button type="button" class="btn cancel" onclick="closeForm()">Cancel</button>
+                    <button type="submit" class="btn" id = "set-line-submit">Set Line</button>    
+                </div>
+                <div id = "game-id-holder"></div>
+            </form>
+        </div> 
         
         <script src = 'scripts/chooseGamesScripts.js'></script>
     </main>

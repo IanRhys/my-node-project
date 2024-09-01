@@ -43,6 +43,7 @@ async function getGames(conferenceAbbreviation){
         button.innerText = teamMatchups[i]; //display the matchup to the user
         button.className = 'button';
         button.data = conferenceAbbreviation; //store the conference abbreviation to return the button to its original spot if it becomes deselected
+        button.value = homeTeams[i] + '$' + awayTeams[i]; //store the names of each team, separated by a character that would never be in a team name
         button.style["display"] = "block";
         button.style["font-size"] = "20px";
         button.style["border"] = "3px solid hsl(44, 33%, 50%)";
@@ -52,26 +53,48 @@ async function getGames(conferenceAbbreviation){
         button.addEventListener('click', function(e) {
             e.preventDefault();
         })
-        button.onclick = selectGame;
+        console.log('HomeTeams[i] is ', homeTeams[i]);
+
+        button.onclick = openSetLineForm;
         list.appendChild(button);
     }
 }
 
 function deselectGame(){
-    this.onclick = selectGame;
+    const teamsArray = this.value.split('$');
+    this.innerText = teamsArray[0] + " vs. " + teamsArray[1];
+
+    this.onclick = openSetLineForm;
     document.getElementById(this.data).appendChild(this);
 }
 
 function selectGame(){
+    const gameID = document.getElementById('game-id-holder').getAttribute("data-gameID");
+    const button = document.getElementById(gameID);
+    
+    const homeTeamRadio = document.getElementById("home-team");
+    const line = document.getElementById("line-amount").value;
+    const teamsArray = button.value.split('$');
     let listOfGames = document.getElementById('chosen-games-list').getElementsByTagName('button');
     if(listOfGames.length < 15){
-        this.onclick = deselectGame;
-        console.log(this.id);
-        document.getElementById('chosen-games-list').appendChild(this); 
+        if(homeTeamRadio.checked){
+            button.innerText = "(-" + line + ") " + button.innerText;
+            button.setAttribute("data-line", teamsArray[0] + ' ' + line);
+        }
+        else{
+            button.innerText = button.innerText + " (-" + line + ")";
+            button.setAttribute("data-line", teamsArray[1] + ' ' + line);
+        }
+        
+        button.onclick = deselectGame;
+        console.log(button.id);
+        document.getElementById('chosen-games-list').appendChild(button); 
     }
     else{
         alert("15 is the maximum number of games alotted.");
     }
+    console.log(button.getAttribute('data-line'));
+    closeForm();
 }
 
 
@@ -85,21 +108,25 @@ document.getElementById('chosen-games').addEventListener('submit', async functio
     
     console.log(listOfGames);
     let gamesArray = [];
+    let matchupsArray = [];
+    let linesArray = [];
     for(i = 0; i < listOfGames.length; i++){
         gamesArray.push(listOfGames[i].id);
-    }
-    console.log(gamesArray);
-    for(i = 0; i < gamesArray.length; i++){
-        console.log(gamesArray[i]);
+        let teamsArray = listOfGames[i].value.split('$');
+        matchupsArray.push(teamsArray[0] + " vs. " + teamsArray[1]);
+        linesArray.push(listOfGames[i].getAttribute("data-line"));
     }
 
     const searchParams = new URLSearchParams(window.location.search);
     const bookID = searchParams.get('bookID');
     const week = searchParams.get('week');
+    
     const payload = {
         bookID: bookID,
         week: week,
-        ids: gamesArray
+        ids: gamesArray,
+        matchups: matchupsArray,
+        lines: linesArray
     }
 
     res = await fetch('http://localhost:3000/chooseGamesRoutes/saveChosenGamesToDB', {
@@ -118,4 +145,28 @@ document.getElementById('chosen-games').addEventListener('submit', async functio
     .catch(error => {
         console.error('Error:', error);
     });
+})
+
+
+
+function openSetLineForm(){
+    const teamsArray = this.value.split('$');
+    document.getElementById("home-team-label").innerText = teamsArray[0];
+    document.getElementById("away-team-label").innerText = teamsArray[1];
+    document.getElementById("set-line").style.display = "block";
+    document.getElementById("home-team").focus();
+    document.getElementById('game-id-holder').setAttribute("data-gameID", this.id); //store the id of the game to be used later
+    document.getElementById("set-line-form").removeEventListener('submit', selectGame);  
+    document.getElementById("set-line-form").addEventListener('submit', selectGame);
+}
+
+function closeForm() {
+    document.getElementById("home-team").checked = false;
+    document.getElementById("away-team").checked = false;
+    document.getElementById("line-amount").value = "";
+    document.getElementById("set-line").style.display = "none";
+}
+
+document.getElementById("set-line-form").addEventListener('submit', function(e) {
+    e.preventDefault();
 })
