@@ -91,8 +91,92 @@ async function deleteBook(bookID){
 
 }
 
-async function makePicks(pickID){
+let picksArray = []; //global array to track picks
+let index = 0;
+async function openMakePicksPopup(){
+    console.log("opening make picks popup");
+    await updatePicksPopup(index);
+    document.getElementById("make-picks").style.display = "block";
+}
 
+function openConfirmPicksPopup(){
+    picksArray.forEach(pickItem => {
+        const pickInfo = document.createElement("div");
+        const matchup = document.createElement("div");
+        const line = document.createElement("div");
+        const pick = document.createElement("div");
+
+        matchup.innerText = pickItem.matchup;
+        line.innerText = pickItem.favorite + " (-" + pickItem.line + ")";
+        switch(pickItem.pick){
+            case 0:
+                pick.innerText = pickItem.favorite + " Cover";
+                break;
+            case 1:
+                pick.innerText = pickItem.underdog + " Cover";
+                break;
+
+            case 2:
+                pick.innerText = pickItem.underdog + " Outright";
+                break;
+        }
+
+        pickInfo.appendChild(matchup);
+        pickInfo.appendChild(line);
+        pickInfo.appendChild(pick);
+
+        document.getElementById("confirm-picks-list").appendChild(pickInfo);
+    })
+    closePicksForm();
+    document.getElementById("confirm-picks").style.display = "block";
+}
+
+async function updatePicksPopup(index){
+
+
+    console.log("updating picks popup");
+
+    const upcomingGamesList = document.getElementById("upcoming-games").getElementsByTagName("div");
+
+    const searchParams = new URLSearchParams(window.location.search);
+    const bookID = searchParams.get('bookID');
+
+    try {
+        const res = await fetch('http://localhost:3000/bookViewRoutes/getGameInfo/'+ bookID + upcomingGamesList[index].id);
+
+        if(!res.ok){
+            throw new Error(`HTTP error! Status: ${res.status}`);
+        }
+
+        const gameInfo = await res.json();
+        console.log(gameInfo.matchup);
+
+        const matchupHeader = document.getElementById("picks-matchup");
+        const lineHeader = document.getElementById("picks-line");
+        matchupHeader.innerText = gameInfo.matchup;
+        lineHeader.innerText = gameInfo.favorite + " (-" + gameInfo.line + ")";
+        document.getElementById("favorite-cover").setAttribute("data-gameID", upcomingGamesList[index].id);
+        document.getElementById("favorite-cover").setAttribute("data-matchup", gameInfo.matchup);
+        document.getElementById("favorite-cover").setAttribute("data-favorite", gameInfo.favorite);
+        document.getElementById("favorite-cover").setAttribute("data-underdog", gameInfo.underdog);
+        document.getElementById("favorite-cover").setAttribute("data-line", gameInfo.line);
+
+        document.getElementById("underdog-cover").setAttribute("data-gameID", upcomingGamesList[index].id);
+        document.getElementById("underdog-cover").setAttribute("data-matchup", gameInfo.matchup);
+        document.getElementById("underdog-cover").setAttribute("data-favorite", gameInfo.favorite);
+        document.getElementById("underdog-cover").setAttribute("data-underdog", gameInfo.underdog);
+        document.getElementById("underdog-cover").setAttribute("data-line", gameInfo.line);
+
+        document.getElementById("underdog-outright").setAttribute("data-gameID", upcomingGamesList[index].id);
+        document.getElementById("underdog-outright").setAttribute("data-matchup", gameInfo.matchup);
+        document.getElementById("underdog-outright").setAttribute("data-favorite", gameInfo.favorite);
+        document.getElementById("underdog-outright").setAttribute("data-underdog", gameInfo.underdog);
+        document.getElementById("underdog-outright").setAttribute("data-line", gameInfo.line);
+
+    }
+    catch(error){
+        console.error(error);
+    }
 }
 
 function getDateWeek(date) {
@@ -110,6 +194,29 @@ function getDateWeek(date) {
     return (currentDate < nextMonday) ? 52 : 
     (currentDate > nextMonday ? Math.ceil(
     (currentDate - nextMonday) / (24 * 3600 * 1000) / 7) : 1);
+}
+
+function openAddMemberForm() {
+    closeForm();
+    document.getElementById("add-member").style.display = "block";
+}
+function openChooseGamesForm(){
+    closeForm();
+    console.log("in choose games orm");
+    document.getElementById("choose-games").style.display = "block";
+}
+function closeForm() {
+    document.getElementById("add-member").style.display = "none";
+    document.getElementById("choose-games").style.display = "none";
+    document.getElementById("confirm-picks").style.display = "none";
+    
+    index = 0;
+    picksArray.length = 0; //clears the picksArray to get new info
+    document.getElementById("confirm-picks-list").replaceChildren();
+    closePicksForm();
+}
+function closePicksForm(){
+    document.getElementById("make-picks").style.display = "none";
 }
 
 document.getElementById('choose-games-form').addEventListener('submit', async function(event){
@@ -147,6 +254,45 @@ document.getElementById('add-member-form').addEventListener('submit', async func
         return;
     }
 });
+
+document.getElementById('confirm-picks-form').addEventListener('submit', async function(event){
+    event.preventDefault();
+
+    picksToDB = [];
+
+    picksArray.forEach(pickInfo => {
+
+        const searchParams = new URLSearchParams(window.location.search);
+        const bookID = searchParams.get('bookID');
+        const gameID = pickInfo.gameID;
+        const email = getEmailFromJWT();
+        const pickID = bookID + gameID + email;
+        const pickObject = {
+            pickID: pickID,
+            pick: pickInfo.pick
+        }
+
+        picksToDB.push(pickObject);
+    })
+
+    const payload = {
+        picks: picksToDB
+    }
+
+    try{    
+        await fetch("http://localhost:3000/bookViewRoutes/savePicksToDB", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        });
+    }
+    catch(error){
+        console.error();
+    }
+    console.log(picksToDB);
+})
 
 async function addMember(bookID, email){
 
@@ -207,72 +353,75 @@ async function addMember(bookID, email){
     }
 }
 
-async function loadPicksTable(){
-    console.log("in loadPciksTable");
-    const picksTable = document.getElementById("make-picks-table");
-    const currentGames = document.getElementById("upcoming-games").getElementsByTagName("div");
+// async function loadPicksTable(){
+//     console.log("in loadPciksTable");
+//     const picksTable = document.getElementById("make-picks-table");
+//     const currentGames = document.getElementById("upcoming-games").getElementsByTagName("div");
     
-    const currentGamesArray = [];
+//     const currentGamesArray = [];
 
-    //get the current week from the current Date for use in the betting line query
-    const currentDate = new Date();
-    const weekNumber = getDateWeek(currentDate);
-    const cfbWeekNumber = weekNumber - 34; //week 1 starts in the 35th week of 2024
+//     //get the current week from the current Date for use in the betting line query
+//     const currentDate = new Date();
+//     const weekNumber = getDateWeek(currentDate);
+//     const cfbWeekNumber = weekNumber - 34; //week 1 starts in the 35th week of 2024
 
-    for(i = 0; i < currentGames.length; i++){
-        console.log("i is ", i);
-        const matchupStringArray = currentGames[i].innerText.split(' ');
-        const homeTeam = matchupStringArray[0];
-        console.log('home team is ', homeTeam);
+//     for(i = 0; i < currentGames.length; i++){
+//         console.log("i is ", i);
+//         const matchupStringArray = currentGames[i].innerText.split(' ');
+//         const homeTeam = matchupStringArray[0];
+//         console.log('home team is ', homeTeam);
 
-        gameObject = {
-            id: currentGames[i].id,
-            matchup: currentGames[i].innerText,
-            line: 0
-        }
-        console.log(gameObject);
-        currentGamesArray.push(gameObject);
-    }
-    console.log(currentGamesArray);
-    currentGamesArray.forEach(game =>{
-        console.log("game name is ", game.matchup);
-        console.log("game id is ", game.id);
+//         gameObject = {
+//             id: currentGames[i].id,
+//             matchup: currentGames[i].innerText,
+//             line: 0
+//         }
+//         console.log(gameObject);
+//         currentGamesArray.push(gameObject);
+//     }
+//     console.log(currentGamesArray);
+//     currentGamesArray.forEach(game =>{
+//         console.log("game name is ", game.matchup);
+//         console.log("game id is ", game.id);
 
-        const row = document.createElement("div");
-        row.className = "picks-row";
+//         const row = document.createElement("div");
+//         row.className = "picks-row";
 
-        const matchup = document.createElement("div");
-        matchup.innerText = game.matchup;
+//         const matchup = document.createElement("div");
+//         matchup.innerText = game.matchup;
 
-        //buttons to be used for making picks
-        const coverButton = document.createElement("button");
-        const noCoverButton = document.createElement("button");
-        const outrightWinButton = document.createElement("button");
-        coverButton.id = game.id;
-        noCoverButton.id = game.id;
-        outrightWinButton.id = game.id;
+//         //buttons to be used for making picks
+//         const coverButton = document.createElement("button");
+//         const noCoverButton = document.createElement("button");
+//         const outrightWinButton = document.createElement("button");
+//         coverButton.id = game.id;
+//         noCoverButton.id = game.id;
+//         outrightWinButton.id = game.id;
 
-        coverButton.innerText = "Cover";
-        noCoverButton.innerText = "Won't Cover";
-        outrightWinButton.innerText = "Underdog Win";
-        coverButton.className = "picks-button";
-        noCoverButton.className = "picks-button";
-        outrightWinButton.className = "picks-button";
+//         coverButton.innerText = "Cover";
+//         noCoverButton.innerText = "Won't Cover";
+//         outrightWinButton.innerText = "Underdog Win";
+//         coverButton.className = "picks-button";
+//         noCoverButton.className = "picks-button";
+//         outrightWinButton.className = "picks-button";
 
-        row.appendChild(matchup);
-        row.appendChild(coverButton);
-        row.appendChild(noCoverButton);
-        row.appendChild(outrightWinButton);
+//         row.appendChild(matchup);
+//         row.appendChild(coverButton);
+//         row.appendChild(noCoverButton);
+//         row.appendChild(outrightWinButton);
 
-        picksTable.appendChild(row);
-    })
+//         picksTable.appendChild(row);
+//     })
 
      
-}
+// }
 
 
 //using the JWT stored in the cookie, get the email
 //to be used as a Primary Key for database queries
+
+
+
 function getEmailFromJWT(){
     const token = readCookie('access_token', document.cookie);
     const arrayToken = token.split('.');
@@ -290,3 +439,67 @@ function readCookie(name, cookieString) {
 	}
 	return null;
 }
+
+document.getElementById("favorite-cover").addEventListener("click", (e) => {
+    e.preventDefault();
+    picksArray[index] = {
+        gameID: document.getElementById("favorite-cover").getAttribute("data-gameID"),
+        matchup: document.getElementById("favorite-cover").getAttribute("data-matchup"),
+        favorite: document.getElementById("favorite-cover").getAttribute("data-favorite"),
+        underdog: document.getElementById("favorite-cover").getAttribute("data-underdog"),
+        line: document.getElementById("favorite-cover").getAttribute("data-line"),
+        pick: 0
+    }
+    const upcomingGamesList = document.getElementById("upcoming-games").getElementsByTagName("div");
+    index++;
+    if(index < upcomingGamesList.length){
+        updatePicksPopup(index);
+    }
+    else{
+        openConfirmPicksPopup();
+    }
+})
+
+document.getElementById("underdog-cover").addEventListener("click", (e) => {
+    e.preventDefault();
+    picksArray[index] = {
+        gameID: document.getElementById("underdog-cover").getAttribute("data-gameID"),
+        matchup: document.getElementById("underdog-cover").getAttribute("data-matchup"),
+        favorite: document.getElementById("underdog-cover").getAttribute("data-favorite"),
+        underdog: document.getElementById("underdog-cover").getAttribute("data-underdog"),
+        line: document.getElementById("underdog-cover").getAttribute("data-line"),
+        pick: 1 //1 is representative of the "underdog cover" option
+    }
+    const upcomingGamesList = document.getElementById("upcoming-games").getElementsByTagName("div");
+
+    index++;
+    if(index < upcomingGamesList.length){
+        updatePicksPopup(index);
+    }
+    else{
+        openConfirmPicksPopup();
+    }
+})
+
+document.getElementById("underdog-outright").addEventListener("click", (e) => {
+    e.preventDefault();
+    picksArray[index] = {
+        gameID: document.getElementById("underdog-outright").getAttribute("data-gameID"),
+        matchup: document.getElementById("underdog-outright").getAttribute("data-matchup"),
+        favorite: document.getElementById("underdog-outright").getAttribute("data-favorite"),
+        underdog: document.getElementById("underdog-outright").getAttribute("data-underdog"),
+        line: document.getElementById("underdog-outright").getAttribute("data-line"),
+        pick: 2 //2 is representative of the "underdog-outright" option
+    }
+
+    const upcomingGamesList = document.getElementById("upcoming-games").getElementsByTagName("div");
+
+    index++;
+
+    if(index < upcomingGamesList.length){
+        updatePicksPopup(index);
+    }
+    else{
+        openConfirmPicksPopup();
+    }
+})

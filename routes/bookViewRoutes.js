@@ -5,8 +5,13 @@ const { getBookMembers,
     getScore,
     getMemberName,
     addMember,
-    getWeekGames
+    getWeekGames,
+    getGameInfo,
+    savePickToDB,
+    createTable
  } = require("../utils/sqlFunctions");
+
+const picksSchema = require("../schemas/picksSchema");
 
 router.get("/:bookID", async (req, res) =>{
     try{
@@ -198,10 +203,6 @@ router.post("/getWeekGames", async (req, res) => {
         console.error(error);
     }
 
-    
-
-
-
     const gamesArray = []; //array to hold objects containing the gameID and matchup
 
     const promises = gameIDArray.map(gameID => {
@@ -227,7 +228,7 @@ router.post("/getWeekGames", async (req, res) => {
                 matchup: matchup
             }
             gamesArray.push(gameObject);
-            console.log(gameObject);
+
         }, function(error) {
             console.error(error);
         });
@@ -238,41 +239,31 @@ router.post("/getWeekGames", async (req, res) => {
     res.json(gamesArray);
 })
 
-router.post("/getLine", async (req, res) => {
-    console.log("in getLine route");
+router.get("/getGameInfo/:gameInfoID", async (req, res) => {
 
-    const week = req.body.week;
-    const team = req.body.team;
-    var cfb = require('cfb.js');
-    var defaultClient = cfb.ApiClient.instance;
-    
-    // Configure API key authorization: ApiKeyAuth
-    var ApiKeyAuth = defaultClient.authentications['ApiKeyAuth'];
-    ApiKeyAuth.apiKey = "Bearer uUROuvdrdvQZVcrWw7i4V9/p3QfWJFiZYPLDDG5VpJ3+PWikQi+Y9uBOWNMYyQcS";
-    
-    var apiInstance = new cfb.BettingApi();
-    console.log('week is ' , week);
-    console.log('team is -' , team, '-');
-    const opts = {
-         week: week,
-         team: team,
-         year: 2024
+    const gameInfoID = req.params.gameInfoID;
+    const matchupAndLine = await getGameInfo(gameInfoID);
+
+    res.json(matchupAndLine[0]);
+})
+
+router.post("/savePicksToDB", async function(req, res){
+    const pickInfo = req.body.picks;
+
+    console.log("in router, values are");
+
+    try{
+        await createTable(picksSchema);
+        for(i = 0; i < pickInfo.length; i++){
+            console.log("gameID ", pickInfo[i].pickID);
+            console.log("pick ", pickInfo[i].pick)
+
+            await savePickToDB(pickInfo[i].pickID, pickInfo[i].pick);
+        }
     }
-
-    apiInstance.getLines(opts).then(data=>{
-        try{
-            console.log('API called successfully. Returned data: ' + data[0].lines[0].spread);
-        }
-        catch(error){
-            console.log(error);
-            res.json({message: "Line Unavailable"});
-            return;
-        }
-        res.json(data);
-    }, function(error) {
-
-    console.error(error);
-    })
+    catch(error){
+        console.error(error);
+    }
 })
 
 module.exports = router;

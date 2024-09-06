@@ -16,10 +16,8 @@ router.post('/saveChosenGamesToDB', async (req, res)=> {
     const bookID = req.body.bookID;
     const lines = req.body.lines;
     const matchups = req.body.matchups;
-
-    console.log(bookID);
-    console.log(week);
-    console.log(gameIDs);
+    const favorites = req.body.favorites;
+    const underdogs = req.body.underdogs;
 
     const key = bookID+week;
     try{
@@ -31,7 +29,7 @@ router.post('/saveChosenGamesToDB', async (req, res)=> {
             console.log(column);
             console.log(gameIDs[i]);
             await saveChosenGameToDB(key, gameIDs[i], column);
-            await saveGameInfoToDB(bookID, gameIDs[i], matchups[i], lines[i]);
+            await saveGameInfoToDB(bookID, gameIDs[i], matchups[i], favorites[i], underdogs[i], lines[i]);
         }
         res.status(201).json({ message: 'Games chosen successfully'});
     }
