@@ -109,3 +109,5 @@ function readCookie(name, cookieString) {
 	}
 	return null;
 }
+
+module.exports = app;

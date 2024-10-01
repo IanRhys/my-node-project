@@ -207,9 +207,9 @@ const saveChosenGameToDB = (key, gameID, column)=>{
   });  
 }
 
-const saveGameInfoToDB = (bookID, gameID, matchup, line)=>{
+const saveGameInfoToDB = (bookID, gameID, matchup, favorite, underdog, line)=>{
   return new Promise((resolve, reject) => {
-    const saveGameInfoQuery = `INSERT INTO gameInfos SET gameInfoID = '${bookID + gameID}', matchup = '${matchup}', line = '${line}', score = 'UNAVAILABLE'`;
+    const saveGameInfoQuery = `INSERT INTO gameInfos SET gameInfoID = '${bookID + gameID}', matchup = '${matchup}', favorite = '${favorite}', underdog = '${underdog}', line = '${line}', score = 'UNAVAILABLE'`;
     pool.query(saveGameInfoQuery, (err, results)=>{
       if (err) {
         reject(err);
@@ -234,6 +234,32 @@ const getWeekGames = (bookID, week) => {
   });  
 }
 
+const getGameInfo = (gameInfoID) => {
+  return new Promise((resolve, reject) => {
+    const getGameInfoQuery = `SELECT * FROM gameInfos WHERE gameInfoID = '${gameInfoID}'`;
+    pool.query(getGameInfoQuery, (err, results)=>{
+      if (err) {
+        reject(err);
+      } else {
+        resolve(results);
+      }
+    });
+  });
+}
+
+const savePickToDB = (pickID, pick) => {
+  return new Promise((resolve, reject) => {
+    const getGameInfoQuery = `INSERT INTO picks SET pickID = '${pickID}', pick = '${pick}'`;
+    pool.query(getGameInfoQuery, (err, results)=>{
+      if (err) {
+        reject(err);
+      } else {
+        resolve(results);
+      }
+    });
+  });
+}
+
 module.exports = {
   createTable,
   checkRecordExists,
@@ -248,5 +274,7 @@ module.exports = {
   createNewGamesRow,
   saveChosenGameToDB,
   getWeekGames,
-  saveGameInfoToDB
+  saveGameInfoToDB,
+  getGameInfo,
+  savePickToDB
 };

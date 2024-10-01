@@ -42,7 +42,7 @@
             </ul>
 
             <div class = "button-container">
-                <button id = "make-picks-button" class = "button" onclick = openMakePicksForm()>
+                <button id = "make-picks-button" class = "button" onclick = openMakePicksPopup()>
                     Make Picks
                 </button>
                 <button id = "choose-games-button" class = "button" onclick = openChooseGamesForm()>
@@ -84,28 +84,29 @@
                 <div id = "make-picks-table">
 
                 </div>
+
+
+                <div id = "picks-matchup"></div>
+                <div id = "picks-line"></div>
+                <div id = "picks-game-buttons">
+                    <button id = "favorite-cover">Favorite Cover</button>
+                    <button id = "underdog-cover">Underdog Cover</button>
+                    <button id = "underdog-outright">Underdog Outright</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="form-popup" id="confirm-picks">
+            <form id = "confirm-picks-form" class="form-container">
+                <h1>Confirm Picks</h1> 
+                <ul id = confirm-picks-list></ul>
+                <div id = "button-container">
+                    <button type="button" class="btn cancel" onclick="closeForm()">Cancel</button>
+                    <button type="submit" class="btn" id = "choose-week-submit">Looks Good!</button>    
+                </div>
             </form>
         </div>
     </main>
 </body>
-<script>
-    function openAddMemberForm() {
-        document.getElementById("add-member").style.display = "block";
-    }
-    function openChooseGamesForm(){
-        console.log("in choose games orm");
-        document.getElementById("choose-games").style.display = "block";
-    }
-    function openMakePicksForm(){
-        console.log("in oepn Make picks form");
-        loadPicksTable();
-        document.getElementById("make-picks").style.display = "block";
-    }
-    function closeForm() {
-        document.getElementById("add-member").style.display = "none";
-        document.getElementById("choose-games").style.display = "none";
-        document.getElementById("make-picks").style.display = "none";
-    }
-</script>
 
 <script src = 'scripts/bookViewScripts.js'></script>

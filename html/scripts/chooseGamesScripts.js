@@ -79,11 +79,15 @@ function selectGame(){
     if(listOfGames.length < 15){
         if(homeTeamRadio.checked){
             button.innerText = "(-" + line + ") " + button.innerText;
-            button.setAttribute("data-line", teamsArray[0] + ' ' + line);
+            button.setAttribute("data-favorite", teamsArray[0]);
+            button.setAttribute("data-underdog", teamsArray[1]);
+            button.setAttribute("data-line", line);
         }
         else{
             button.innerText = button.innerText + " (-" + line + ")";
-            button.setAttribute("data-line", teamsArray[1] + ' ' + line);
+            button.setAttribute("data-favorite", teamsArray[1]);
+            button.setAttribute("data-underdog", teamsArray[0]);
+            button.setAttribute("data-line", line);
         }
         
         button.onclick = deselectGame;
@@ -109,23 +113,29 @@ document.getElementById('chosen-games').addEventListener('submit', async functio
     console.log(listOfGames);
     let gamesArray = [];
     let matchupsArray = [];
+    let favoritesArray = [];
+    let underdogsArray = [];
     let linesArray = [];
     for(i = 0; i < listOfGames.length; i++){
         gamesArray.push(listOfGames[i].id);
         let teamsArray = listOfGames[i].value.split('$');
         matchupsArray.push(teamsArray[0] + " vs. " + teamsArray[1]);
         linesArray.push(listOfGames[i].getAttribute("data-line"));
+        favoritesArray.push(listOfGames[i].getAttribute("data-favorite"));
+        underdogsArray.push(listOfGames[i].getAttribute("data-underdog"));
     }
 
     const searchParams = new URLSearchParams(window.location.search);
     const bookID = searchParams.get('bookID');
     const week = searchParams.get('week');
-    
+
     const payload = {
         bookID: bookID,
         week: week,
         ids: gamesArray,
         matchups: matchupsArray,
+        favorites: favoritesArray,
+        underdogs: underdogsArray,
         lines: linesArray
     }
 
