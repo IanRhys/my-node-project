@@ -9,6 +9,8 @@ const port = 3000;
 const mysql = require('mysql');
 const path = require('path');
 const cookieParser = require('cookie-parser');
+const ip = require('ip');
+const ipAddress = ip.address();
 
 const app = express();
 
@@ -97,6 +99,7 @@ app.get('/make-picks', verifyToken, (req, res) => {
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
+    console.log(`Network access via: ${ipAddress}:${port}`);
 });
 
 function readCookie(name, cookieString) {
